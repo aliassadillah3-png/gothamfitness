@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>GOGETA FITNESS AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080a0f;--surf:#0e1018;--card:#13161f;--brd:#1e2230;
+  --red:#e8472a;--orange:#f59b3a;--gold:#e8c94a;--cyan:#3adea8;--blue:#3a8de8;--purple:#a07ef5;
+  --txt:#f0f4ff;--dim:#5a6280;--dimb:#8890aa;
+  --grad:linear-gradient(135deg,#e8472a,#f59b3a);
+  --gradg:linear-gradient(135deg,#3adea8,#3a8de8);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;padding-bottom:90px}
+
+/* ── LOADING ── */
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.load-logo{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.load-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--dim)}
+.load-bar{width:100px;height:2px;background:var(--brd);border-radius:99px;overflow:hidden;margin-top:4px}
+.load-fill{height:100%;background:var(--grad);animation:lf 1.4s ease forwards}
+@keyframes lf{to{width:100%}}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:200;background:rgba(8,10,15,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd);padding:11px 15px 9px}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.logo-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--dim);display:block;margin-top:1px;-webkit-text-fill-color:var(--dim)}
+.hdr-badge{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;padding:4px 10px;border-radius:20px;border:1px solid var(--brd);color:var(--dimb)}
+.pbar-row{display:flex;align-items:center;gap:7px}
+.pbar-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);white-space:nowrap}
+.pbar{flex:1;height:2px;background:var(--brd);border-radius:99px;overflow:hidden}
+.pfil{height:100%;border-radius:99px;background:var(--grad);transition:width .5s}
+.ppct{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim)}
+
+/* ── BOTTOM NAV ── */
+.botnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(8,10,15,.97);backdrop-filter:blur(20px);border-top:1px solid var(--brd);display:flex;justify-content:space-around;padding:8px 0 14px}
+.bnav{display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);cursor:pointer;padding:3px 16px;user-select:none;transition:color .2s}
+.bnav.on{color:var(--red)}
+.bico{font-size:19px}
+
+/* ── TABS ── */
+.tab{display:none;animation:rise .3s ease}
+.tab.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PROFIL TAB ── */
+.profil-wrap{padding:12px 14px 20px}
+.profil-hero{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:18px;margin-bottom:10px;position:relative;overflow:hidden}
+.profil-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(232,71,42,.12),transparent 70%)}
+.ph-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;margin-bottom:4px}
+.ph-sub{font-size:11px;color:var(--dim);margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fg-full{grid-column:1/-1}
+.flbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:4px}
+.finput{width:100%;background:var(--surf);border:1px solid var(--brd);border-radius:9px;padding:9px 11px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;outline:none;-webkit-appearance:none}
+.finput:focus{border-color:var(--red)}
+.fselect{width:100%;background:var(--surf);border:1px solid var(--brd);border-radius:9px;padding:9px 11px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;outline:none;-webkit-appearance:none;appearance:none}
+.fselect:focus{border-color:var(--red)}
+.gen-btn{width:100%;margin-top:12px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;border-radius:11px;border:none;cursor:pointer;background:var(--grad);color:#fff;transition:transform .15s}
+.gen-btn:active{transform:scale(.97)}
+.gen-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── MACROS CARD ── */
+.macros-card{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:10px}
+.mc-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--red);margin-bottom:10px}
+.mc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.mc-box{background:var(--surf);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid var(--brd)}
+.mc-val{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1}
+.mc-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--dim);margin-top:2px}
+
+/* ── PROGRAMME CARDS ── */
+.prog-wrap{padding:10px 14px 0}
+.dcard{background:var(--card);border:1px solid var(--brd);border-radius:14px;margin-bottom:10px;overflow:hidden;animation:rise .35s ease both}
+.dcard.done{border-color:var(--cyan)}
+.dcard.open .chev{transform:rotate(180deg)}
+.dhead{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none}
+.day-badge{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;padding:4px 9px;border-radius:20px;border:1px solid;flex-shrink:0;min-width:58px;text-align:center}
+.dinfo{flex:1}
+.dname{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px}
+.dsub{font-size:10px;color:var(--dim);margin-top:1px}
+.dchk{width:28px;height:28px;border-radius:50%;border:2px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;cursor:pointer;transition:all .18s}
+.dchk.done{background:var(--cyan);border-color:var(--cyan);color:#000}
+.chev{color:var(--dim);font-size:14px;transition:transform .25s;flex-shrink:0}
+.dbody{display:none;border-top:1px solid var(--brd)}
+.dcard.open .dbody{display:block}
+
+/* ── OBJECTIF BOX ── */
+.obj-box{margin:10px 14px;background:rgba(232,71,42,.06);border:1px solid rgba(232,71,42,.15);border-radius:10px;padding:10px 13px}
+.obj-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--red);margin-bottom:5px}
+.obj-txt{font-size:12px;color:var(--dimb);line-height:1.5}
+.tech-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:5px;margin-top:5px;margin-right:4px}
+
+/* ── PHASE BOX ── */
+.phase-box{margin:0 14px 8px;background:rgba(58,222,168,.05);border:1px solid rgba(58,222,168,.12);border-radius:10px;padding:9px 13px;display:flex;gap:12px}
+.phase-cell{text-align:center;flex:1}
+.phase-val{font-family:'Bebas Neue',sans-serif;font-size:22px;line-height:1}
+.phase-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--dim);margin-top:1px}
+
+/* ── EXERCISE TABLE ── */
+.ex-table{margin:0 14px 10px;background:var(--surf);border:1px solid var(--brd);border-radius:10px;overflow:hidden}
+.ex-table-head{display:grid;grid-template-columns:1fr 50px 60px 70px;padding:7px 11px;border-bottom:1px solid var(--brd)}
+.ex-table-head span{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim)}
+.ex-row{display:grid;grid-template-columns:1fr 50px 60px 70px;padding:10px 11px;border-bottom:1px solid rgba(255,255,255,.03);align-items:center;cursor:pointer;transition:background .15s}
+.ex-row:last-child{border-bottom:none}
+.ex-row:active{background:rgba(255,255,255,.03)}
+.ex-row.done{background:rgba(58,222,168,.04)}
+.ex-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.ex-chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;transition:all .15s}
+.ex-chk.done{background:var(--cyan);border-color:var(--cyan);color:#000}
+.ex-val{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--dimb)}
+.ex-tech{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.5px}
+
+/* ── SETS MINI ── */
+.sets-mini{margin:0 14px 6px;display:flex;gap:5px;flex-wrap:wrap}
+.set-m{width:40px;height:40px;border-radius:8px;border:1.5px solid var(--brd);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0}
+.set-m:active{transform:scale(.9)}
+.set-m.done{border-color:var(--cyan);background:rgba(58,222,168,.1)}
+.set-m-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--dim);line-height:1}
+.set-m.done .set-m-num{color:var(--cyan)}
+.set-m-rep{font-family:'DM Sans',sans-serif;font-size:9px;color:var(--dim);font-weight:700}
+
+/* ── WEIGHT BLOCK ── */
+.wblock{margin:0 14px 8px;background:var(--surf);border:1px solid var(--brd);border-radius:10px;padding:9px 11px}
+.wblock-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.wpr{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)}
+.winput-row{display:flex;gap:5px;align-items:center}
+.wlbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);width:32px}
+.winput{flex:1;background:#060810;border:1px solid var(--brd);border-radius:7px;padding:6px 9px;color:var(--txt);font-family:'DM Mono',monospace;font-size:14px;outline:none;-webkit-appearance:none;min-width:0}
+.winput:focus{border-color:var(--red)}
+.wunit{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);width:16px}
+.wsave{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;padding:6px 11px;border-radius:7px;border:none;cursor:pointer;color:#000;background:var(--grad);flex-shrink:0}
+.whist{margin-top:7px;border-top:1px solid rgba(255,255,255,.05);padding-top:5px}
+.whist-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:3px}
+.whist-row{display:flex;justify-content:space-between;padding:2px 0}
+.whist-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--dim)}
+.whist-val{font-family:'DM Mono',monospace;font-size:12px}
+
+/* ── TIMER ── */
+.timer-block{margin:10px 14px;background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:12px;text-align:center}
+.tlbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--dim);margin-bottom:4px}
+.tnum{font-family:'DM Mono',monospace;font-size:48px;letter-spacing:4px;line-height:1;transition:color .2s}
+.tpres{display:flex;gap:5px;margin:8px 0 0}
+.tpre{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:1px;padding:7px 0;flex:1;border-radius:8px;border:1px solid var(--brd);background:var(--card);color:var(--txt);cursor:pointer}
+.tpre.rec{border-color:var(--red);color:var(--red)}
+.tgo{margin-top:6px;width:100%;padding:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;border-radius:10px;border:none;cursor:pointer;color:#fff;background:var(--grad);transition:transform .15s}
+.tgo:active{transform:scale(.97)}
+
+/* ── VALIDATE BTN ── */
+.vbtn{display:block;width:calc(100% - 28px);margin:0 14px 14px;padding:12px;border-radius:11px;border:none;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;cursor:pointer;background:var(--grad);color:#fff;transition:transform .15s}
+.vbtn:active{transform:scale(.97)}
+
+/* ── AI AGENT TAB ── */
+.ai-wrap{padding:12px 14px 20px}
+.ai-hero{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden}
+.ai-hero::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(58,222,168,.1),transparent 70%)}
+.ai-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--cyan);margin-bottom:3px}
+.ai-sub{font-size:11px;color:var(--dim)}
+.chat-box{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:8px;min-height:200px;max-height:420px;overflow-y:auto}
+.msg{margin-bottom:10px;animation:rise .2s ease}
+.msg-user{text-align:right}
+.msg-bubble{display:inline-block;max-width:85%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;text-align:left}
+.msg-user .msg-bubble{background:var(--grad);color:#fff;border-radius:12px 12px 3px 12px}
+.msg-ai .msg-bubble{background:var(--card);border:1px solid var(--brd);color:var(--txt);border-radius:12px 12px 12px 3px}
+.msg-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);margin-bottom:3px}
+.chat-input-row{display:flex;gap:7px}
+.chat-input{flex:1;background:var(--surf);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;-webkit-appearance:none;resize:none;min-height:44px}
+.chat-input:focus{border-color:var(--cyan)}
+.chat-send{padding:10px 14px;border-radius:10px;border:none;background:var(--gradg);color:#000;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;flex-shrink:0;transition:transform .15s}
+.chat-send:active{transform:scale(.93)}
+.chat-send:disabled{opacity:.4;cursor:not-allowed}
+.quick-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.qbtn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:6px 10px;border-radius:7px;border:1px solid var(--brd);background:transparent;color:var(--dimb);cursor:pointer;white-space:nowrap}
+.qbtn:active{opacity:.6}
+
+/* ── STATS TAB ── */
+.stats-wrap{padding:12px 14px 20px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.sbox{background:var(--card);border:1px solid var(--brd);border-radius:13px;padding:14px;text-align:center}
+.snum{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1}
+.slbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-top:3px}
+.ssec{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--dim);margin:10px 0 6px}
+.wrow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.wday{aspect-ratio:1;border-radius:6px;background:var(--surf);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;color:var(--dim)}
+.wday.hit{background:var(--cyan);border-color:var(--cyan);color:#000}
+.wday.today{border-color:var(--red);color:var(--red)}
+.prow{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:7px}
+.prh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.prn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700}
+.prkg{font-family:'Bebas Neue',sans-serif;font-size:22px}
+.rbtn{width:100%;margin-top:8px;padding:11px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;border-radius:10px;border:1px solid var(--brd);background:transparent;color:var(--dim);cursor:pointer}
+
+/* ── ALTS ── */
+.alt-btns{display:flex;gap:5px;padding:3px 11px 8px;flex-wrap:wrap}
+.alt-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:5px 9px;border-radius:6px;border:1px solid var(--brd);background:transparent;color:var(--dimb);cursor:pointer;white-space:nowrap}
+.alt-btn.hi{border-color:var(--red);color:var(--red)}
+.alt-panel{display:none;margin:0 11px 8px;background:var(--bg);border:1px solid var(--brd);border-radius:9px;overflow:hidden}
+.alt-panel.open{display:block}
+.alt-panel-hd{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);padding:7px 11px 3px}
+.alt-item{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border-top:1px solid rgba(255,255,255,.04)}
+.alt-item-n{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700}
+.alt-use{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 9px;border-radius:5px;border:1px solid var(--red);color:var(--red);background:transparent;cursor:pointer}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--brd);border-radius:18px 18px 0 0;padding:20px 16px 36px;width:100%;max-width:480px;animation:slideup .25s ease}
+@keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.modal-x{font-size:20px;cursor:pointer;background:none;border:none;color:var(--dim)}
+.mlbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:4px}
+.minput{width:100%;background:var(--surf);border:1px solid var(--brd);border-radius:9px;padding:9px 11px;color:var(--txt);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;outline:none;margin-bottom:9px;-webkit-appearance:none}
+.minput:focus{border-color:var(--red)}
+.mbtns{display:flex;gap:7px;margin-top:3px}
+.mbtn2{flex:1;padding:11px;border-radius:9px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;border:none;transition:transform .15s}
+.mbtn2:active{transform:scale(.97)}
+
+/* ── CHART ── */
+.chart-wrap{background:var(--card);border:1px solid var(--brd);border-radius:13px;padding:13px;margin-bottom:10px}
+.chart-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--dim);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.chart-ex-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:var(--txt)}
+.chart-svg{width:100%;height:120px;display:block}
+.chart-tabs{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.chart-tab{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:5px 9px;border-radius:6px;border:1px solid var(--brd);background:transparent;color:var(--dim);cursor:pointer;white-space:nowrap}
+.chart-tab.on{border-color:var(--red);color:var(--red);background:rgba(232,71,42,.08)}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--grad);color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:8px 18px;border-radius:30px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── TYPING ── */
+.typing{display:inline-flex;gap:4px;padding:8px 13px}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:tp .8s infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+</style>
+</head>
+<body>
+
+<div id="loadScreen">
+  <div class="load-logo">GOGETA FITNESS AI</div>
+  <div class="load-sub">AGENT FITNESS</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-row">
+    <div class="logo">GOGETA FITNESS AI<span class="logo-sub">AGENT FITNESS PERSONNEL</span></div>
+    <div class="hdr-badge" id="hdrBadge">CONFIGURE</div>
+  </div>
+  <div class="pbar-row">
+    <div class="pbar-lbl">PROGRESSION</div>
+    <div class="pbar"><div class="pfil" id="mainPfil" style="width:0%"></div></div>
+    <div class="ppct" id="mainPpct">0%</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab on" id="tab-profil">
+  <div class="profil-wrap">
+
+    <!-- HERO -->
+    <div class="profil-hero">
+      <div class="ph-title">TON PROFIL</div>
+      <div class="ph-sub">Remplis tes infos — l'agent génère ton programme et tes macros</div>
+      <div class="form-grid">
+        <div>
+          <div class="flbl">POIDS (KG)</div>
+          <input class="finput" id="fpoids" type="number" inputmode="decimal" placeholder="70" step="0.5">
+        </div>
+        <div>
+          <div class="flbl">TAILLE (CM)</div>
+          <input class="finput" id="ftaille" type="number" inputmode="numeric" placeholder="172">
+        </div>
+        <div>
+          <div class="flbl">ÂGE</div>
+          <input class="finput" id="fage" type="number" inputmode="numeric" placeholder="25">
+        </div>
+        <div>
+          <div class="flbl">SEXE</div>
+          <select class="fselect" id="fsexe">
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+          </select>
+        </div>
+        <div class="fg-full">
+          <div class="flbl">OBJECTIF</div>
+          <select class="fselect" id="fobjectif">
+            <option value="prise_muscle">💪 Prise de muscle</option>
+            <option value="perte_gras">🔥 Perte de gras</option>
+            <option value="recomposition">⚡ Recomposition corporelle</option>
+            <option value="force">🏋 Force maximale</option>
+          </select>
+        </div>
+        <div class="fg-full">
+          <div class="flbl">NIVEAU</div>
+          <select class="fselect" id="fniveau">
+            <option value="debutant">🌱 Débutant (0-1 an)</option>
+            <option value="intermediaire" selected>⚡ Intermédiaire (1-3 ans)</option>
+            <option value="avance">🔥 Avancé (3+ ans)</option>
+          </select>
+        </div>
+        <div class="fg-full">
+          <div class="flbl">ACTIVITÉ QUOTIDIENNE</div>
+          <select class="fselect" id="factivite">
+            <option value="sedentaire">🛋 Sédentaire (bureau)</option>
+            <option value="leger">🚶 Légèrement actif</option>
+            <option value="modere" selected>🚴 Modérément actif</option>
+            <option value="actif">🏃 Très actif</option>
+          </select>
+        </div>
+      </div>
+      <button class="gen-btn" id="genBtn" onclick="genererProgramme()">⚡ GÉNÉRER MON PROGRAMME</button>
+    </div>
+
+    <!-- MACROS -->
+    <div id="macrosCard" style="display:none">
+      <div class="macros-card">
+        <div class="mc-title">🔥 OBJECTIFS NUTRITIONNELS</div>
+        <div class="mc-grid">
+          <div class="mc-box"><div class="mc-val" id="mcCal" style="color:var(--red)">—</div><div class="mc-lbl">KCAL</div></div>
+          <div class="mc-box"><div class="mc-val" id="mcProt" style="color:var(--orange)">—</div><div class="mc-lbl">PROT (G)</div></div>
+          <div class="mc-box"><div class="mc-val" id="mcGluc" style="color:var(--gold)">—</div><div class="mc-lbl">GLUC (G)</div></div>
+          <div class="mc-box"><div class="mc-val" id="mcLip" style="color:var(--cyan)">—</div><div class="mc-lbl">LIP (G)</div></div>
+        </div>
+      </div>
+      <div id="alimentsCard" style="background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:10px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--orange);margin-bottom:8px">🥗 ALIMENTS RECOMMANDÉS</div>
+        <div id="alimentsTxt" style="font-size:12px;color:var(--dimb);line-height:1.7"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROGRAMME TAB -->
+<div class="tab" id="tab-prog">
+  <div class="prog-wrap" id="progContainer">
+    <div style="text-align:center;padding:40px 20px;color:var(--dim)">
+      <div style="font-size:32px;margin-bottom:8px">💪</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px">CONFIGURE TON PROFIL<br>POUR GÉNÉRER LE PROGRAMME</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS TAB -->
+<div class="tab" id="tab-stats">
+  <div class="stats-wrap" id="statsWrap">
+    <div style="text-align:center;padding:40px 20px;color:var(--dim)">
+      <div style="font-size:32px;margin-bottom:8px">📊</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px">COMMENCE TES SÉANCES<br>POUR VOIR TES STATS</div>
+    </div>
+  </div>
+</div>
+
+<!-- NUTRITION TAB -->
+<div class="tab" id="tab-nutri">
+  <div style="padding:12px 14px 20px">
+    <div style="background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:16px;margin-bottom:10px">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--orange);margin-bottom:3px">🥗 CALORIES DU JOUR</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:14px">Tape un aliment → sélectionne → entre les grammes</div>
+      <!-- SEARCH -->
+      <div style="position:relative">
+        <input id="foodSearch" class="finput" type="text" placeholder="Ex: poulet, riz, oeuf, saumon..." autocomplete="off" oninput="liveSearch()">
+        <div id="foodDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surf);border:1px solid var(--brd);border-radius:10px;z-index:100;overflow:hidden;margin-top:4px"></div>
+      </div>
+      <div id="foodResults" style="margin-top:8px"></div>
+    </div>
+    <!-- TOTAUX -->
+    <div style="background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:10px">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--orange);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+        <span>TOTAL DU JOUR</span>
+        <button onclick="resetNutri()" style="font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:5px;border:1px solid var(--brd);background:transparent;color:var(--dim);cursor:pointer">↩ RESET</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px">
+        <div style="background:var(--surf);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid var(--brd)">
+          <div id="totCal" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);line-height:1">0</div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--dim);margin-top:2px">KCAL</div>
+        </div>
+        <div style="background:var(--surf);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid var(--brd)">
+          <div id="totProt" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--orange);line-height:1">0</div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--dim);margin-top:2px">PROT(G)</div>
+        </div>
+        <div style="background:var(--surf);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid var(--brd)">
+          <div id="totGluc" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);line-height:1">0</div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--dim);margin-top:2px">GLUC(G)</div>
+        </div>
+        <div style="background:var(--surf);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid var(--brd)">
+          <div id="totLip" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--cyan);line-height:1">0</div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--dim);margin-top:2px">LIP(G)</div>
+        </div>
+      </div>
+      <div id="nutriProgress"></div>
+    </div>
+    <div id="mealList"></div>
+  </div>
+</div>
+
+<!-- MODAL GRAMMES -->
+<div class="modal-bg" id="gramsModal">
+  <div class="modal">
+    <div class="modal-title" id="gramsModalTitle">AJOUTER <button class="modal-x" onclick="closeGramsModal()">✕</button></div>
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:10px;padding:12px;margin-bottom:12px;text-align:center" id="gramsPreview">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--orange)" id="gramsCalPreview">0 kcal</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)" id="gramsMacroPreview">0g P · 0g G · 0g L</div>
+    </div>
+    <div class="mlbl">QUANTITÉ (GRAMMES)</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <button onclick="adjustGrams(-50)" style="width:44px;height:44px;border-radius:9px;border:1px solid var(--brd);background:var(--surf);color:var(--txt);font-size:20px;cursor:pointer;flex-shrink:0">−</button>
+      <input class="minput" id="gramsInput" type="number" inputmode="numeric" value="100" min="1" max="2000" style="text-align:center;font-size:20px;font-weight:700;margin-bottom:0" oninput="updateGramsPreview()">
+      <button onclick="adjustGrams(50)" style="width:44px;height:44px;border-radius:9px;border:1px solid var(--brd);background:var(--surf);color:var(--txt);font-size:20px;cursor:pointer;flex-shrink:0">+</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px" id="unitBtns"></div>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <button onclick="setGrams(50)" style="flex:1;padding:8px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--dimb);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">50g</button>
+      <button onclick="setGrams(100)" style="flex:1;padding:8px;border-radius:7px;border:1px solid var(--orange);background:rgba(245,155,58,.1);color:var(--orange);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">100g</button>
+      <button onclick="setGrams(150)" style="flex:1;padding:8px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--dimb);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">150g</button>
+      <button onclick="setGrams(200)" style="flex:1;padding:8px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--dimb);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer">200g</button>
+    </div>
+    <div class="mbtns">
+      <button class="mbtn2" onclick="closeGramsModal()" style="background:var(--surf);color:var(--dim)">ANNULER</button>
+      <button class="mbtn2" onclick="confirmAddFood()" style="background:var(--grad);color:#fff">✅ AJOUTER</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="botnav">
+  <div class="bnav on" id="nav-profil" onclick="showTab('profil')"><div class="bico">👤</div>PROFIL</div>
+  <div class="bnav" id="nav-prog" onclick="showTab('prog')"><div class="bico">💪</div>PROG</div>
+  <div class="bnav" id="nav-nutri" onclick="showTab('nutri')"><div class="bico">🥗</div>NUTRI</div>
+  <div class="bnav" id="nav-stats" onclick="showTab('stats')"><div class="bico">📊</div>STATS</div>
+</div>
+
+<!-- MODAL MODIFIER -->
+<div class="modal-bg" id="editModal">
+  <div class="modal">
+    <div class="modal-title">MODIFIER <button class="modal-x" id="modalClose">✕</button></div>
+    <div class="mlbl">NOM DE L'EXERCICE</div>
+    <input class="minput" id="editName" type="text" placeholder="Nom de l'exercice">
+    <div class="mlbl">SÉRIES × REPS</div>
+    <input class="minput" id="editSets" type="text" placeholder="ex: 4×10-12">
+    <div class="mbtns">
+      <button class="mbtn2" id="modalCancel" style="background:var(--surf);color:var(--dim)">ANNULER</button>
+      <button class="mbtn2" id="modalSave" style="background:var(--grad);color:#fff">SAUVEGARDER</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STORAGE ───
+var _cache={};var _db=null;
+function openDB(){return new Promise(function(res,rej){var r=indexedDB.open('Gogeta',1);r.onupgradeneeded=function(e){e.target.result.createObjectStore('data',{keyPath:'k'})};r.onsuccess=function(e){_db=e.target.result;res()};r.onerror=rej})}
+function dbGet(k){return new Promise(function(res){if(!_db){res(_cache[k]||null);return}var tx=_db.transaction('data','readonly');var req=tx.objectStore('data').get(k);req.onsuccess=function(){res(req.result?req.result.v:null)};req.onerror=function(){res(null)}})}
+function dbSet(k,v){return new Promise(function(res){_cache[k]=v;if(!_db){res();return}var tx=_db.transaction('data','readwrite');tx.objectStore('data').put({k:k,v:v});tx.oncomplete=res;tx.onerror=res})}
+function st(){return _cache['state']||{}}
+function sv(d){_cache['state']=d;dbSet('state',d)}
+
+// ─── CALCULS MACROS ───
+function calculerMacros(poids,taille,age,sexe,objectif,activite){
+  var bmr=sexe==='homme'?(10*poids+6.25*taille-5*age+5):(10*poids+6.25*taille-5*age-161);
+  var facteurs={sedentaire:1.2,leger:1.375,modere:1.55,actif:1.725};
+  var tdee=Math.round(bmr*(facteurs[activite]||1.55));
+  var cal=tdee;
+  if(objectif==='prise_muscle')cal=tdee+300;
+  else if(objectif==='perte_gras')cal=tdee-400;
+  else if(objectif==='force')cal=tdee+200;
+  var prot=Math.round(poids*(objectif==='prise_muscle'||objectif==='force'?2.2:1.8));
+  var lip=Math.round(cal*0.25/9);
+  var gluc=Math.round((cal-prot*4-lip*9)/4);
+  return{cal:cal,prot:prot,gluc:gluc,lip:lip};
+}
+
+// ─── PROGRAMME SELON OBJECTIF + SEXE + NIVEAU ───
+function getProgramme(objectif,niveau,poids,sexe){
+  // ── HOMME PRISE DE MUSCLE ──
+  if(objectif==='prise_muscle'){
+    var sF=4;var sH=4;
+    return [
+      {name:'UPPER A — FORCE',sub:'Pecs · Dos · Épaules · Bras — Charges lourdes',icon:'🔥',badge:'JOUR 1',color:'#e8472a',
+       objectif:'Charges maximales, mouvements de base lourds',technique:'Rest Pause',series:sF,reps:'4-6',rest:'3 min',restSec:180,
+       exercices:[
+        {n:'Développé couché barre',s:sF,r:'4-6',rest:'3 min',tech:'',alts:['Développé haltères plat','Machine chest press','Développé Smith Machine']},
+        {n:'Rowing barre pronation',s:sF,r:'4-6',rest:'3 min',tech:'',alts:['Rowing haltère unilatéral','Tirage horizontal câble','Chest supported row']},
+        {n:'Développé militaire barre',s:4,r:'5-6',rest:'2 min 30',tech:'',alts:['Développé militaire haltères','Machine épaules','Arnold press']},
+        {n:'Tirage poitrine prise serrée',s:4,r:'5-6',rest:'2 min 30',tech:'',alts:['Tirage poulie large','Tractions assistées','Tirage supination']},
+        {n:'Curl barre EZ',s:4,r:'6-8',rest:'2 min',tech:'',alts:['Curl haltères alternés','Curl poulie basse','Curl pupitre']},
+        {n:'Triceps barre au front',s:4,r:'6-8',rest:'2 min',tech:'',alts:['Triceps poulie corde','Dips lestés','Extension haltère']},
+        {n:'Élévations latérales haltères',s:3,r:'10-12',rest:'1 min 30',tech:'',alts:['Élévations latérales câble','Machine élévations lat.','Face pull']}
+      ]},
+      {name:'LOWER A — QUADRICEPS',sub:'Squat · Presse · Fentes · Isolations',icon:'🦵',badge:'JOUR 2',color:'#e8c94a',
+       objectif:'Charges maximales sur les mouvements fondamentaux',technique:'Rest Pause',series:sF,reps:'4-6',rest:'3 min',restSec:180,
+       exercices:[
+        {n:'Squat barre',s:sF,r:'4-6',rest:'3 min 30',tech:'Ceinture recommandée',alts:['Hack squat machine','Goblet squat haltère','Leg press pieds hauts']},
+        {n:'Soulevé de terre',s:sF,r:'4-6',rest:'3 min 30',tech:'Ceinture recommandée',alts:['Romanian deadlift haltères','Soulevé sumo barre','Good morning']},
+        {n:'Fentes marchées haltères',s:4,r:'6-8',rest:'2 min 30',tech:'',alts:['Fentes statiques','Fentes bulgares haltères','Step-up box']},
+        {n:'Leg curl couché',s:4,r:'6-8',rest:'2 min',tech:'',alts:['Leg curl assis machine','Nordic curl','Leg curl câble']},
+        {n:'Leg extension',s:3,r:'8-10',rest:'1 min 30',tech:'',alts:['Sissy squat','Wall sit lesté','Leg press pieds serrés']},
+        {n:'Mollets debout barre',s:4,r:'8-10',rest:'1 min 30',tech:'',alts:['Mollets machine debout','Mollets unilatéral','Mollets presse']}
+      ]},
+      {name:'UPPER B — HYPERTROPHIE',sub:'Volume maximum · Pump intense',icon:'💪',badge:'JOUR 3',color:'#a07ef5',
+       objectif:'Maximum de volume, pump intense',technique:'Drop Set / Super Set',series:sH,reps:'10-12',rest:'1 min 30',restSec:90,
+       exercices:[
+        {n:'Développé couché haltères',s:4,r:'10-12',rest:'1 min 30',tech:'',alts:['Développé couché barre','Machine chest press','Développé Smith Machine']},
+        {n:'Développé incliné haltères',s:3,r:'10-12',rest:'1 min 30',tech:'',alts:['Développé incliné barre','Machine inclinée','Câble incliné']},
+        {n:'Tirage horizontal câble',s:4,r:'10-12',rest:'1 min 30',tech:'',alts:['Rowing haltère unilatéral','Machine rowing','Chest supported row']},
+        {n:'Écarté poulie basse',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Pec deck machine','Écarté haltères plat','Câble crossover']},
+        {n:'Pull over poulie',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Pull over haltère','Pull over barre','Tirage bras tendus']},
+        {n:'Élévations latérales câble',s:4,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Élévations latérales haltères','Machine élévations','Upright row']},
+        {n:'Oiseau haltères',s:4,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Face pull poulie','Oiseau câble','Machine deltoïde post.']},
+        {n:'Curl haltères alternés',s:4,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Curl barre EZ','Curl marteau','Curl poulie basse']},
+        {n:'Triceps poulie corde',s:4,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Extension haltère au-dessus tête','Dips banc','Skull crusher']}
+      ]},
+      {name:'LOWER B — ISCHIO-FESSIERS',sub:'Hip Thrust · RDL · Fentes · Mollets',icon:'⚡',badge:'JOUR 4',color:'#3adea8',
+       objectif:'Volume maximal ischios et fessiers',technique:'Drop Set',series:sH,reps:'10-12',rest:'1 min 30',restSec:90,
+       exercices:[
+        {n:'Hip thrust barre',s:4,r:'10-12',rest:'1 min 30',tech:'Pause 2s en haut',alts:['Hip thrust machine','Pont fessier lesté','Hip thrust haltère']},
+        {n:'Romanian deadlift barre',s:4,r:'10-12',rest:'1 min 30',tech:'',alts:['RDL haltères','Good morning barre','Soulevé jambes tendues']},
+        {n:'Fentes bulgares haltères',s:3,r:'10/jambe',rest:'2 min',tech:'',alts:['Fentes statiques','Step-up box haute','Fentes marchées']},
+        {n:'Leg curl assis',s:4,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Leg curl couché','Nordic curl','Leg curl câble']},
+        {n:'Leg extension',s:3,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Sissy squat','Wall sit','Leg press pieds serrés']},
+        {n:'Abductions câble',s:3,r:'15-20',rest:'1 min',tech:'',alts:['Machine abduction assise','Clamshell élastique','Kickback câble']},
+        {n:'Mollets assis machine',s:4,r:'12-15',rest:'1 min',tech:'',alts:['Mollets debout machine','Mollets presse à pieds','Mollets unilatéral']}
+      ]}
+    ];
+  }
+
+  // ── FORCE MAXIMALE ──
+  if(objectif==='force'){
+    return [
+      {name:'UPPER A — FORCE MAX',sub:'Bench · Row · Press — Powerlifting',icon:'🏋',badge:'JOUR 1',color:'#e8472a',
+       objectif:'Force brute — charges maximales',technique:'Pause-repos',series:5,reps:'3-5',rest:'3 min 30',restSec:210,
+       exercices:[
+        {n:'Développé couché barre',s:5,r:'3-5',rest:'3 min 30',tech:'Arch léger',alts:['Développé barre prise serrée','Board press','Floor press']},
+        {n:'Rowing barre pronation',s:5,r:'3-5',rest:'3 min 30',tech:'',alts:['Rowing Pendlay','Chest supported row','Rowing haltère lourd']},
+        {n:'Développé militaire barre',s:4,r:'4-5',rest:'3 min',tech:'',alts:['Push press','Développé assis barre','Dips lestés']},
+        {n:'Tirage poitrine prise serrée',s:4,r:'4-5',rest:'2 min 30',tech:'',alts:['Tractions lestées','Tirage supination','Tirage neutre']},
+        {n:'Curl barre EZ lourd',s:3,r:'5-6',rest:'2 min',tech:'',alts:['Curl barre droite','Curl marteau lourd','Curl incliné']},
+        {n:'Triceps barre au front lourd',s:3,r:'5-6',rest:'2 min',tech:'',alts:['Dips lestés','Close grip bench','Extension barre debout']}
+      ]},
+      {name:'LOWER A — SQUAT + SdT',sub:'Squat · Soulevé de terre — Force brute',icon:'🦵',badge:'JOUR 2',color:'#e8c94a',
+       objectif:'Squat et soulevé lourds — force max',technique:'Pause-repos',series:5,reps:'3-5',rest:'4 min',restSec:240,
+       exercices:[
+        {n:'Squat barre haute',s:5,r:'3-5',rest:'4 min',tech:'Ceinture + genouillères',alts:['Squat barre basse','Squat paused','Front squat']},
+        {n:'Soulevé de terre conventionnel',s:5,r:'3-5',rest:'4 min',tech:'Ceinture obligatoire',alts:['Soulevé sumo','Déficit deadlift','Romanian deadlift lourd']},
+        {n:'Leg press lourd',s:4,r:'6-8',rest:'2 min 30',tech:'',alts:['Hack squat lourd','Presse 45° lourde','Squat bulgare lesté']},
+        {n:'Leg curl couché',s:3,r:'6-8',rest:'2 min',tech:'',alts:['Nordic curl','Leg curl assis','RDL haltères lourds']},
+        {n:'Gainage lesté',s:3,r:'60 sec',rest:'1 min',tech:'',alts:['Ab wheel','Dragon flag','Relevé de jambes suspendu']}
+      ]},
+      {name:'UPPER B — VOLUME',sub:'Volume accessoire — hypertrophie',icon:'💪',badge:'JOUR 3',color:'#a07ef5',
+       objectif:'Volume et hypertrophie accessoire',technique:'Super Set',series:4,reps:'8-10',rest:'2 min',restSec:120,
+       exercices:[
+        {n:'Développé couché haltères',s:4,r:'8-10',rest:'2 min',tech:'',alts:['Machine chest press','Développé incliné haltères','Cables croisés']},
+        {n:'Tirage horizontal câble',s:4,r:'8-10',rest:'2 min',tech:'',alts:['Rowing haltère','Machine rowing','Chest supported row']},
+        {n:'Développé militaire haltères',s:4,r:'8-10',rest:'2 min',tech:'',alts:['Arnold press','Machine épaules','Push press léger']},
+        {n:'Face pull poulie',s:3,r:'12-15',rest:'1 min 30',tech:'',alts:['Oiseau haltères','Élévations latérales','Machine deltoïde post.']},
+        {n:'Curl barre EZ',s:3,r:'10-12',rest:'1 min 30',tech:'',alts:['Curl haltères','Curl marteau','Curl incliné']},
+        {n:'Triceps poulie corde',s:3,r:'10-12',rest:'1 min 30',tech:'',alts:['Dips banc','Extension haltère','Skull crusher léger']}
+      ]},
+      {name:'LOWER B — VOLUME JAMBES',sub:'Hip Thrust · Fentes · Isolations',icon:'⚡',badge:'JOUR 4',color:'#3adea8',
+       objectif:'Volume et accessoire jambes/fessiers',technique:'Drop Set',series:4,reps:'8-12',rest:'2 min',restSec:120,
+       exercices:[
+        {n:'Hip thrust barre',s:4,r:'8-10',rest:'2 min',tech:'',alts:['Hip thrust machine','Pont fessier lesté','Fentes bulgares lourdes']},
+        {n:'Fentes bulgares haltères',s:4,r:'8/jambe',rest:'2 min',tech:'',alts:['Fentes marchées barre','Step-up box lestée','Split squat']},
+        {n:'Leg curl couché',s:4,r:'10-12',rest:'1 min 30',tech:'Drop Set',alts:['Leg curl assis','Nordic curl','RDL haltères']},
+        {n:'Leg extension',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Sissy squat','Leg press pieds serrés','Wall sit']},
+        {n:'Mollets debout machine',s:4,r:'10-15',rest:'1 min',tech:'',alts:['Mollets presse','Mollets unilatéral','Mollets assis machine']}
+      ]}
+    ];
+  }
+
+  // ── PERTE DE GRAS (HOMME OU FEMME) ──
+  if(objectif==='perte_gras'){
+    var isFemme=sexe==='femme';
+    return [
+      {name:isFemme?'UPPER — GALBE HAUT':'UPPER — FORCE + CARDIO',sub:isFemme?'Pecs · Dos · Épaules · Bras — Tonification':'Full Upper · Circuits · Temps de repos court',icon:'🔥',badge:'JOUR 1',color:'#e8472a',
+       objectif:'Brûler du gras tout en maintenant le muscle',technique:'Super Set',series:4,reps:'12-15',rest:'60 sec',restSec:60,
+       exercices:[
+        {n:isFemme?'Développé couché haltères légers':'Développé couché haltères',s:4,r:'12-15',rest:'1 min',tech:'Super Set',alts:['Machine chest press','Pompes lestées','Développé incliné']},
+        {n:'Tirage horizontal câble',s:4,r:'12-15',rest:'1 min',tech:'Super Set',alts:['Rowing haltère','Machine rowing','Tirage poulie haute']},
+        {n:'Développé militaire haltères',s:3,r:'12-15',rest:'1 min',tech:'',alts:['Machine épaules','Arnold press léger','Élévations frontales']},
+        {n:'Élévations latérales haltères',s:3,r:'15-20',rest:'45 sec',tech:'Drop Set',alts:['Élévations latérales câble','Machine élévations','Face pull']},
+        {n:'Curl haltères alternés',s:3,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Curl poulie basse','Curl marteau','Curl incliné']},
+        {n:'Triceps poulie corde',s:3,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Dips banc','Extension haltère','Triceps kickback']}
+      ]},
+      {name:isFemme?'LOWER A — FESSIERS + CUISSES':'LOWER A — JAMBES CIRCUIT',sub:isFemme?'Squat · Fentes · Isolations — Tonification':'Squat · Presse · Circuit cardio',icon:'🔥',badge:'JOUR 2',color:'#e8c94a',
+       objectif:'Brûler du gras, tonifier les jambes',technique:'Circuit',series:4,reps:'15-20',rest:'60 sec',restSec:60,
+       exercices:[
+        {n:isFemme?'Goblet squat haltère':'Squat barre léger',s:4,r:'15-20',rest:'1 min',tech:'',alts:['Leg press','Hack squat machine','Squat sumo']},
+        {n:'Fentes marchées haltères',s:4,r:'12/jambe',rest:'1 min',tech:'',alts:['Fentes statiques','Step-up box','Fentes latérales']},
+        {n:'Leg press',s:3,r:'15-20',rest:'1 min',tech:'Drop Set',alts:['Hack squat','Goblet squat lesté','Squat sumo haltère']},
+        {n:'Leg curl allongé machine',s:4,r:'15-20',rest:'45 sec',tech:'Drop Set',alts:['Leg curl assis','Nordic curl','Leg curl câble']},
+        {n:'Leg extension machine',s:3,r:'15-20',rest:'45 sec',tech:'Drop Set',alts:['Sissy squat','Wall sit','Leg press pieds serrés']},
+        {n:'Mollets debout machine',s:3,r:'20-25',rest:'45 sec',tech:'',alts:['Mollets presse','Mollets unilatéral','Saut à la corde']}
+      ]},
+      {name:isFemme?'UPPER B — TONIFICATION':'UPPER B — VOLUME LÉGER',sub:'Volume modéré · Temps de repos court · Cardio',icon:'💪',badge:'JOUR 3',color:'#a07ef5',
+       objectif:'Volume léger, cardio intégré, brûler des calories',technique:'Drop Set',series:3,reps:'15-20',rest:'45 sec',restSec:45,
+       exercices:[
+        {n:'Pec deck machine',s:3,r:'15-20',rest:'45 sec',tech:'Drop Set',alts:['Écarté haltères','Câble crossover','Pompes']},
+        {n:'Tirage poulie haute prise large',s:3,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Tractions assistées','Tirage supination','Machine dos']},
+        {n:'Rowing haltère unilatéral',s:3,r:'15/bras',rest:'45 sec',tech:'',alts:['Machine rowing','Tirage câble','Chest supported row']},
+        {n:'Élévations latérales câble',s:3,r:'20',rest:'30 sec',tech:'Super Set',alts:['Face pull','Oiseau haltères','Machine deltoïde']},
+        {n:'Curl marteau haltères',s:3,r:'15-20',rest:'30 sec',tech:'Drop Set',alts:['Curl barre EZ léger','Curl câble','Curl incliné']},
+        {n:'Triceps poulie corde',s:3,r:'15-20',rest:'30 sec',tech:'Drop Set',alts:['Dips banc','Extension haltère léger','Triceps kickback']}
+      ]},
+      {name:isFemme?'LOWER B — ISCHIO-FESSIERS':'LOWER B — CIRCUIT FESSIERS',sub:isFemme?'Hip Thrust · RDL · Abductions — Galbe fessiers':'Hip Thrust · Fentes bulgares · Cardio',icon:'🍑',badge:'JOUR 4',color:'#3adea8',
+       objectif:'Fessiers et ischios — brûler du gras ciblé',technique:'Super Set',series:4,reps:'15-20',rest:'60 sec',restSec:60,
+       exercices:[
+        {n:'Hip thrust machine',s:4,r:'15-20',rest:'1 min',tech:'Contraction 2s',alts:['Hip thrust barre','Pont fessier lesté','Kickback câble']},
+        {n:isFemme?'Soulevé de terre jambes tendues haltères':'Romanian deadlift barre',s:4,r:'12-15',rest:'1 min',tech:'',alts:['Good morning','Leg curl couché','Pull through câble']},
+        {n:'Fentes bulgares poids du corps',s:3,r:'12/jambe',rest:'1 min',tech:'',alts:['Fentes statiques','Step-up box','Fentes marchées']},
+        {n:'Leg curl assis machine',s:4,r:'15-20',rest:'45 sec',tech:'Drop Set',alts:['Leg curl couché','Nordic curl léger','Leg curl câble']},
+        {n:'Machine abduction assise',s:4,r:'20-25',rest:'45 sec',tech:'Super Set',alts:['Abduction câble debout','Clamshell élastique','Kickback sol']},
+        {n:'Mollets assis machine',s:3,r:'20-25',rest:'45 sec',tech:'',alts:['Mollets debout machine','Mollets presse','Mollets unilatéral']}
+      ]}
+    ];
+  }
+
+  // ── RECOMPOSITION CORPORELLE ──
+  if(objectif==='recomposition'){
+    var isFemmeR=sexe==='femme';
+    return [
+      {name:'UPPER A — FORCE MODÉRÉE',sub:'Pecs · Dos · Épaules · Bras — Charges intermédiaires',icon:'⚡',badge:'JOUR 1',color:'#e8472a',
+       objectif:'Force + volume modéré — recomposition',technique:'Rest Pause',series:4,reps:'8-10',rest:'2 min',restSec:120,
+       exercices:[
+        {n:'Développé couché haltères',s:4,r:'8-10',rest:'2 min',tech:'',alts:['Développé couché barre','Machine chest press','Développé incliné']},
+        {n:'Tirage horizontal câble',s:4,r:'8-10',rest:'2 min',tech:'',alts:['Rowing haltère','Machine rowing','Chest supported row']},
+        {n:'Développé militaire haltères',s:3,r:'8-10',rest:'2 min',tech:'',alts:['Machine épaules','Arnold press','Push press']},
+        {n:'Face pull poulie',s:3,r:'12-15',rest:'1 min',tech:'',alts:['Oiseau haltères','Machine deltoïde post.','Élévations latérales']},
+        {n:'Curl haltères alternés',s:3,r:'10-12',rest:'1 min 30',tech:'Drop Set',alts:['Curl barre EZ','Curl marteau','Curl câble']},
+        {n:'Triceps poulie corde',s:3,r:'10-12',rest:'1 min 30',tech:'Drop Set',alts:['Dips banc','Extension haltère','Skull crusher léger']}
+      ]},
+      {name:'LOWER A — QUADRICEPS',sub:'Squat · Presse · Fentes · Isolations',icon:'🦵',badge:'JOUR 2',color:'#e8c94a',
+       objectif:'Quadriceps et stabilité — charges intermédiaires',technique:'Rest Pause',series:4,reps:'8-12',rest:'2 min',restSec:120,
+       exercices:[
+        {n:isFemmeR?'Goblet squat haltère':'Squat barre',s:4,r:'8-10',rest:'2 min 30',tech:'',alts:['Hack squat machine','Leg press','Squat sumo']},
+        {n:'Leg press',s:4,r:'10-12',rest:'2 min',tech:'',alts:['Hack squat','Goblet squat','Presse 45°']},
+        {n:'Fentes marchées haltères',s:3,r:'10/jambe',rest:'1 min 30',tech:'',alts:['Fentes statiques','Fentes bulgares','Step-up box']},
+        {n:'Leg curl allongé machine',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Leg curl assis','Nordic curl','Leg curl câble']},
+        {n:'Leg extension machine',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Sissy squat','Wall sit','Leg press pieds serrés']},
+        {n:'Mollets debout machine',s:3,r:'15-20',rest:'1 min',tech:'',alts:['Mollets presse','Mollets unilatéral','Mollets assis']}
+      ]},
+      {name:'UPPER B — HYPERTROPHIE',sub:'Volume · Pump · Isolation haut du corps',icon:'💪',badge:'JOUR 3',color:'#a07ef5',
+       objectif:'Volume et pump — hypertrophie',technique:'Drop Set / Super Set',series:4,reps:'12-15',rest:'1 min 30',restSec:90,
+       exercices:[
+        {n:'Pec deck machine',s:4,r:'12-15',rest:'1 min 30',tech:'Drop Set',alts:['Écarté haltères','Câble crossover','Pompes lestées']},
+        {n:'Tirage poulie haute prise large',s:4,r:'12-15',rest:'1 min 30',tech:'',alts:['Tractions assistées','Tirage supination','Machine dos']},
+        {n:'Rowing haltère unilatéral',s:3,r:'12-15',rest:'1 min',tech:'',alts:['Machine rowing','Tirage câble','Chest supported row']},
+        {n:'Élévations latérales câble',s:3,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Élévations haltères','Machine élévations','Upright row']},
+        {n:'Oiseau haltères',s:3,r:'15-20',rest:'45 sec',tech:'Super Set',alts:['Face pull','Oiseau câble','Machine deltoïde post.']},
+        {n:'Curl marteau haltères',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Curl barre EZ','Curl câble','Curl incliné']},
+        {n:'Extension triceps haltère',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Triceps poulie','Dips banc','Skull crusher léger']}
+      ]},
+      {name:'LOWER B — ISCHIO-FESSIERS',sub:'Hip Thrust · RDL · Abductions — Galbe',icon:'🍑',badge:'JOUR 4',color:'#3adea8',
+       objectif:'Ischios et fessiers — recomposition',technique:'Drop Set',series:4,reps:'12-15',rest:'1 min 30',restSec:90,
+       exercices:[
+        {n:'Hip thrust barre',s:4,r:'10-12',rest:'1 min 30',tech:'Pause 2s',alts:['Hip thrust machine','Pont fessier lesté','Hip thrust haltère']},
+        {n:isFemmeR?'Soulevé de terre jambes tendues haltères':'Romanian deadlift barre',s:4,r:'10-12',rest:'1 min 30',tech:'',alts:['RDL haltères','Good morning','Pull through câble']},
+        {n:'Fentes bulgares haltères',s:3,r:'10/jambe',rest:'2 min',tech:'',alts:['Fentes statiques','Step-up box','Fentes marchées']},
+        {n:'Leg curl assis machine',s:3,r:'12-15',rest:'1 min',tech:'Drop Set',alts:['Leg curl couché','Nordic curl','Leg curl câble']},
+        {n:'Machine abduction assise',s:3,r:'15-20',rest:'1 min',tech:'Super Set',alts:['Abduction câble','Clamshell élastique','Kickback câble']},
+        {n:'Mollets assis machine',s:3,r:'15-20',rest:'1 min',tech:'',alts:['Mollets debout machine','Mollets presse','Mollets unilatéral']}
+      ]}
+    ];
+  }
+
+  // fallback
+  return getProgramme('prise_muscle',niveau,poids,sexe);
+}
+// ─── ALIMENTS ───
+function getAliments(objectif){
+  var aliments={
+    prise_muscle:'<strong style="color:var(--orange)">🥩 Protéines :</strong> Poulet, œufs, thon, saumon, bœuf maigre, fromage blanc 0%, whey<br><strong style="color:var(--gold)">🍚 Glucides :</strong> Riz basmati, patate douce, flocons d\'avoine, pain complet, banane, pâtes complètes<br><strong style="color:var(--cyan)">🥑 Lipides :</strong> Huile d\'olive, noix, amandes, avocat, jaune d\'œuf<br><strong style="color:var(--dimb)">💡 Timing :</strong> Protéines à chaque repas · Glucides avant et après séance · Dernière protéine avant de dormir',
+    perte_gras:'<strong style="color:var(--orange)">🥩 Protéines :</strong> Blanc de poulet, œufs, thon, crevettes, fromage blanc 0%, skyr<br><strong style="color:var(--gold)">🍚 Glucides :</strong> Légumes verts, patate douce (petit déj + post-séance seulement), flocons d\'avoine matin<br><strong style="color:var(--cyan)">🥑 Lipides :</strong> Huile d\'olive, noix (portions contrôlées), avocat<br><strong style="color:var(--dimb)">💡 Timing :</strong> Réduire glucides le soir · Protéines élevées pour préserver le muscle · Légumes à volonté',
+    recomposition:'<strong style="color:var(--orange)">🥩 Protéines :</strong> Poulet, œufs entiers, thon, bœuf maigre, whey, fromage blanc<br><strong style="color:var(--gold)">🍚 Glucides :</strong> Riz, patate douce, flocons d\'avoine · Glucides autour des séances principalement<br><strong style="color:var(--cyan)">🥑 Lipides :</strong> Huile d\'olive, oméga-3 (saumon, sardines), noix, avocat<br><strong style="color:var(--dimb)">💡 Timing :</strong> Cyclage glucides — plus les jours d\'entraînement, moins les jours de repos',
+    force:'<strong style="color:var(--orange)">🥩 Protéines :</strong> Bœuf, poulet, œufs entiers, saumon, fromage, whey + caséine<br><strong style="color:var(--gold)">🍚 Glucides :</strong> Riz blanc, pâtes, pain, pomme de terre, céréales · Volume important pour l\'énergie<br><strong style="color:var(--cyan)">🥑 Lipides :</strong> Beurre de cacahuète, huile d\'olive, œufs entiers, viandes grasses<br><strong style="color:var(--dimb)">💡 Timing :</strong> Gros repas 2h avant séance · Créatine 5g/jour · Post-séance protéines + glucides rapides'
+  };
+  return aliments[objectif]||aliments.prise_muscle;
+}
+
+// ─── GÉNÉRATION ───
+var PROG_ACTUEL=null;
+function genererProgramme(){
+  var poids=parseFloat(document.getElementById('fpoids').value)||70;
+  var taille=parseFloat(document.getElementById('ftaille').value)||172;
+  var age=parseFloat(document.getElementById('fage').value)||25;
+  var sexe=document.getElementById('fsexe').value;
+  var objectif=document.getElementById('fobjectif').value;
+  var niveau=document.getElementById('fniveau').value;
+  var activite=document.getElementById('factivite').value;
+
+  var macros=calculerMacros(poids,taille,age,sexe,objectif,activite);
+  document.getElementById('mcCal').textContent=macros.cal;
+  document.getElementById('mcProt').textContent=macros.prot;
+  document.getElementById('mcGluc').textContent=macros.gluc;
+  document.getElementById('mcLip').textContent=macros.lip;
+  document.getElementById('macrosCard').style.display='block';
+  document.getElementById('alimentsTxt').innerHTML=getAliments(objectif);
+
+  PROG_ACTUEL=getProgramme(objectif,niveau,poids,sexe);
+  var s=st();s.profil={poids,taille,age,sexe,objectif,niveau,activite};s.macros=macros;sv(s);
+
+  renderProg();
+  showTab('prog');
+  showToast('✅ PROGRAMME GÉNÉRÉ !');
+  document.getElementById('hdrBadge').textContent=poids+'KG · '+objectif.replace('_',' ').toUpperCase();
+}
+
+// ─── RENDER PROG ───
+function renderProg(){
+  if(!PROG_ACTUEL){document.getElementById('progContainer').innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--dim)"><div style="font-size:32px;margin-bottom:8px">💪</div><div style="font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:2px">CONFIGURE TON PROFIL<br>POUR GÉNÉRER LE PROGRAMME</div></div>';return}
+  var s=st();var html='';var totalEx=0,doneEx=0;
+  for(var di=0;di<PROG_ACTUEL.length;di++){
+    var day=PROG_ACTUEL[di];var isDone=!!s['_d'+di];var isOpen=!!s['_open'+di];
+    var dayTotal=day.exercices.length;var dayDone=0;
+    for(var ei=0;ei<day.exercices.length;ei++){if(s['_e_'+di+'_'+ei])dayDone++}
+    totalEx+=dayTotal;doneEx+=dayDone;
+    html+='<div class="dcard'+(isDone?' done':'')+(isOpen?' open':'')+'" id="dc_'+di+'">'
+      +'<div class="dhead" onclick="toggleDay('+di+')">'
+      +'<div class="day-badge" style="color:'+day.color+';border-color:'+day.color+'44">'+day.badge+'</div>'
+      +'<div class="dinfo"><div class="dname">'+day.icon+' '+day.name+'</div><div class="dsub">'+day.sub+'</div></div>'
+      +'<div class="dchk'+(isDone?' done':'')+'" onclick="event.stopPropagation();toggleDone('+di+')">'+(isDone?'✓':'')+'</div>'
+      +'<div class="chev">▾</div></div>';
+    if(isOpen){
+      html+='<div class="dbody">';
+      html+='<div class="obj-box"><div class="obj-title">⚡ OBJECTIF SÉANCE</div><div class="obj-txt">'+day.objectif+'</div>'
+        +'<span class="tech-badge" style="background:'+day.color+'22;color:'+day.color+';border:1px solid '+day.color+'33">'+day.technique+'</span></div>';
+      html+='<div class="phase-box"><div class="phase-cell"><div class="phase-val" style="color:'+day.color+'">'+dayDone+'/'+dayTotal+'</div><div class="phase-lbl">EXERCICES</div></div>'
+        +'<div class="phase-cell"><div class="phase-val" style="color:'+day.color+'">'+day.reps+'</div><div class="phase-lbl">REPS</div></div>'
+        +'<div class="phase-cell"><div class="phase-val" style="color:'+day.color+'">'+day.rest+'</div><div class="phase-lbl">REPOS</div></div></div>';
+      // table
+      html+='<div class="ex-table"><div class="ex-table-head"><span>EXERCICE</span><span>SÉR</span><span>REPS</span><span>REPOS</span></div>';
+      for(var ei=0;ei<day.exercices.length;ei++){
+        var ex=day.exercices[ei];var exDone=!!s['_e_'+di+'_'+ei];
+        var cx=s['_cx_'+di+'_'+ei];
+        var exName=cx?cx.n:ex.n;
+        var techColor=ex.tech==='Drop Set'?'var(--red)':ex.tech==='Super Set'?'var(--purple)':ex.tech?'var(--gold)':'transparent';
+        html+='<div class="ex-row'+(exDone?' done':'')+'" onclick="toggleEx('+di+','+ei+')">'
+          +'<div class="ex-name"><div class="ex-chk'+(exDone?' done':'')+'">'+( exDone?'✓':'')+'</div>'+exName+(ex.tech?'<span style="font-family:\'DM Mono\',monospace;font-size:8px;padding:2px 5px;border-radius:4px;background:'+techColor+'22;color:'+techColor+'">'+ex.tech+'</span>':'')+'</div>'
+          +'<div class="ex-val">'+ex.s+'</div>'
+          +'<div class="ex-val">'+ex.r+'</div>'
+          +'<div class="ex-val" style="font-size:10px">'+ex.rest+'</div>'
+          +'</div>';
+        // sets + weight
+        html+=buildSets(di,ei,day.color,ex.s);
+        html+=buildWeight(di,ei,day.color);
+        // alt + modifier buttons
+        var cx=s['_cx_'+di+'_'+ei];
+        var altOpen=!!s['_altopen_'+di+'_'+ei];
+        html+='<div class="alt-btns">';
+        if(ex.alts&&ex.alts.length)html+='<button class="alt-btn'+(altOpen?' hi':'')+'" onclick="toggleAlt('+di+','+ei+')">🔄 ALTERNATIVES</button>';
+        html+='<button class="alt-btn" onclick="openEdit('+di+','+ei+')">✏️ MODIFIER</button>';
+        if(cx)html+='<button class="alt-btn" onclick="resetEx('+di+','+ei+')" style="color:var(--dim)">↩ RESET</button>';
+        html+='</div>';
+        // alt panel
+        if(ex.alts&&ex.alts.length){
+          html+='<div class="alt-panel'+(altOpen?' open':'')+'" id="alt_'+di+'_'+ei+'">';
+          html+='<div class="alt-panel-hd">MÊME MUSCLE — EXERCICE DIFFÉRENT</div>';
+          for(var ai=0;ai<ex.alts.length;ai++){
+            html+='<div class="alt-item"><div class="alt-item-n">'+ex.alts[ai]+'</div><button class="alt-use" onclick="useAlt('+di+','+ei+',\''+ex.alts[ai].replace(/'/g,"\\'")+'\')" style="border-color:'+day.color+';color:'+day.color+'">UTILISER</button></div>';
+          }
+          html+='</div>';
+        }
+      }
+      html+='</div>';
+      // timer
+      html+='<div class="timer-block"><div class="tlbl">CHRONO REPOS</div>'
+        +'<div class="tnum" id="tnum_'+di+'">'+fmt(day.restSec)+'</div>'
+        +'<div class="tpres">'
+        +'<button class="tpre" onclick="presetTimer('+di+',60)">1:00</button>'
+        +'<button class="tpre" onclick="presetTimer('+di+',90)">1:30</button>'
+        +'<button class="tpre rec" onclick="presetTimer('+di+','+day.restSec+')">REC</button>'
+        +'<button class="tpre" onclick="presetTimer('+di+',180)">3:00</button>'
+        +'</div><button class="tgo" id="tgo_'+di+'" onclick="startTimer('+di+','+day.restSec+')">▶ START</button></div>';
+      html+='<button class="vbtn" onclick="validateDay('+di+')">'+(isDone?'✓ SÉANCE VALIDÉE':'VALIDER LA SÉANCE')+'</button>';
+      html+='</div>';
+    } else {
+      html+='<div class="dbody" style="display:none"></div>';
+    }
+    html+='</div>';
+  }
+  var pct=totalEx?Math.round(doneEx/totalEx*100):0;
+  document.getElementById('mainPfil').style.width=pct+'%';
+  document.getElementById('mainPpct').textContent=pct+'%';
+  document.getElementById('progContainer').innerHTML=html;
+}
+
+function buildSets(di,ei,color,total){
+  var s=st();var data=s['_sets_'+di+'_'+ei]||{done:[]};
+  var html='<div class="sets-mini">';
+  for(var i=0;i<total;i++){
+    var isDone=!!(data.done&&data.done[i]);
+    html+='<div class="set-m'+(isDone?' done':'')+'" onclick="toggleSet('+di+','+ei+','+i+')" style="'+(isDone?'border-color:'+color+';background:'+color+'18':'')+'"><div class="set-m-num" style="'+(isDone?'color:'+color:'')+'">S'+(i+1)+'</div></div>';
+  }
+  html+='</div>';return html;
+}
+
+function buildWeight(di,ei,color){
+  var s=st();var entries=s['_w_'+di+'_'+ei]||[];var pr=entries.reduce(function(b,e){return(parseFloat(e.kg)||0)>(parseFloat(b.kg)||0)?e:b},{kg:0});
+  var last=entries[0]||{};var id='w_'+di+'_'+ei;
+  var hist='';
+  if(entries.length){
+    hist='<div class="whist"><div class="whist-lbl">HISTORIQUE</div>';
+    for(var i=0;i<Math.min(entries.length,4);i++){
+      var e=entries[i];var isPR=parseFloat(e.kg)===parseFloat(pr.kg)&&i===0;
+      hist+='<div class="whist-row"><span class="whist-date">'+e.date+'</span><span class="whist-val" style="color:'+color+'">'+e.kg+'kg'+(isPR?' 🏆':'')+'</span></div>';
+    }
+    hist+='</div>';
+  }
+  return '<div class="wblock"><div class="wblock-title"><span>⚖️ POIDS UTILISÉ</span>'+(pr.kg?'<span class="wpr">PR: '+pr.kg+'kg 🏆</span>':'')+'</div>'
+    +'<div class="winput-row"><span class="wlbl">Poids</span><input class="winput" id="'+id+'_kg" type="number" inputmode="decimal" placeholder="0" value="'+(last.kg||'')+'" step="0.5"><span class="wunit">kg</span><button class="wsave" onclick="saveWeight('+di+','+ei+')">💾</button></div>'
+    +hist+'</div>';
+}
+
+// ─── ACTIONS ───
+function toggleDay(di){var s=st();s['_open'+di]=!s['_open'+di];sv(s);renderProg()}
+function toggleDone(di){var s=st();s['_d'+di]=!s['_d'+di];if(s['_d'+di]){var wl=s.wl||[];var t=new Date().toISOString().slice(0,10);if(wl.indexOf(t)===-1)wl.push(t);s.wl=wl;s.streak=(s.streak||0)+1}sv(s);renderProg();showToast(s['_d'+di]?'🔥 SÉANCE VALIDÉE !':'↩ ANNULÉ')}
+function validateDay(di){toggleDone(di)}
+function toggleEx(di,ei){var s=st();s['_e_'+di+'_'+ei]=!s['_e_'+di+'_'+ei];sv(s);renderProg()}
+function toggleSet(di,ei,si){var s=st();var k='_sets_'+di+'_'+ei;if(!s[k])s[k]={done:[]};if(!s[k].done)s[k].done=[];s[k].done[si]=!s[k].done[si];sv(s);renderProg()}
+function saveWeight(di,ei){var s=st();var inp=document.getElementById('w_'+di+'_'+ei+'_kg');if(!inp||!parseFloat(inp.value))return;var k='_w_'+di+'_'+ei;if(!s[k])s[k]=[];s[k].unshift({date:new Date().toLocaleDateString('fr-FR'),kg:parseFloat(inp.value)});if(s[k].length>12)s[k]=s[k].slice(0,12);sv(s);renderProg();showToast('💾 POIDS SAUVEGARDÉ !')}
+
+// ─── TIMER ───
+var timerRunning=false,timerInt=null,timerDi=-1;
+function startTimer(di,sec){
+  if(timerRunning&&timerDi===di){stopTimer();return}
+  if(timerRunning)stopTimer();
+  timerDi=di;timerRunning=true;
+  var end=Date.now()+sec*1000;
+  var btn=document.getElementById('tgo_'+di);var num=document.getElementById('tnum_'+di);
+  if(btn)btn.textContent='⏸ STOP';
+  timerInt=setInterval(function(){
+    var rem=Math.max(0,Math.round((end-Date.now())/1000));
+    if(num)num.textContent=fmt(rem);
+    if(rem<=0){stopTimer();showToast('✅ REPOS TERMINÉ !');if(num)num.style.color='var(--cyan)'}
+    else if(rem<=10&&num)num.style.color='var(--red)';
+    else if(num)num.style.color='var(--txt)';
+  },250);
+}
+function stopTimer(){timerRunning=false;clearInterval(timerInt);var btn=document.getElementById('tgo_'+timerDi);if(btn)btn.textContent='▶ START'}
+function presetTimer(di,sec){stopTimer();var num=document.getElementById('tnum_'+di);if(num)num.textContent=fmt(sec);num.style.color='var(--txt)'}
+function fmt(s){return Math.floor(s/60)+':'+(('0'+(s%60)).slice(-2))}
+
+// ─── TABS ───
+function showTab(t){
+  ['profil','prog','nutri','stats'].forEach(function(id){
+    var tab=document.getElementById('tab-'+id);
+    var nav=document.getElementById('nav-'+id);
+    if(tab)tab.classList.toggle('on',id===t);
+    if(nav)nav.classList.toggle('on',id===t);
+  });
+  if(t==='stats')renderStats();
+  if(t==='prog')renderProg();
+  if(t==='nutri')renderNutri();
+}
+
+// ─── STATS ───
+function renderStats(){
+  var s=st();var total=0;var keys=Object.keys(s);
+  for(var i=0;i<keys.length;i++){if(/^_d\d+$/.test(keys[i])&&s[keys[i]])total++}
+  var streak=s.streak||0;var wl=s.wl||[];
+  var DN=['D','L','M','M','J','V','S'];var whtml='';
+  for(var i=0;i<7;i++){var d=new Date();d.setDate(d.getDate()-(6-i));var ds=d.toISOString().slice(0,10);var hit=wl.indexOf(ds)!==-1;whtml+='<div class="wday'+(hit?' hit':(i===6?' today':''))+'">'+DN[d.getDay()]+'</div>'}
+  var weightHTML='';var shown=0;
+  if(PROG_ACTUEL){
+    for(var di=0;di<PROG_ACTUEL.length&&shown<8;di++){
+      for(var ei=0;ei<PROG_ACTUEL[di].exercices.length&&shown<8;ei++){
+        var wk='_w_'+di+'_'+ei;
+        if(s[wk]&&s[wk].length){
+          if(shown===0)weightHTML='<div class="ssec">💾 DERNIERS POIDS</div>';
+          var last2=s[wk][0];var pr2=s[wk].reduce(function(b,e){return(parseFloat(e.kg)||0)>(parseFloat(b.kg)||0)?e:b},{kg:0});
+          weightHTML+='<div class="prow"><div class="prh"><div class="prn">'+PROG_ACTUEL[di].exercices[ei].n+'</div><div class="prkg" style="color:'+PROG_ACTUEL[di].color+'">'+last2.kg+'kg</div></div>'
+            +'<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);margin-top:2px">'+last2.date+(pr2.kg!==last2.kg?' · PR: '+pr2.kg+'kg 🏆':'')+'</div></div>';
+          shown++;
+        }
+      }
+    }
+  }
+  var macrosHTML='';
+  if(s.macros){var m=s.macros;macrosHTML='<div class="ssec">🔥 TES MACROS</div><div style="background:var(--card);border:1px solid var(--brd);border-radius:13px;padding:13px;margin-bottom:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">'
+    +'<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--red)">'+m.cal+'</div><div style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--dim)">KCAL</div></div>'
+    +'<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--orange)">'+m.prot+'g</div><div style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--dim)">PROT</div></div>'
+    +'<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--gold)">'+m.gluc+'g</div><div style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--dim)">GLUC</div></div>'
+    +'<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--cyan)">'+m.lip+'g</div><div style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--dim)">LIP</div></div>'
+    +'</div>'}
+  document.getElementById('statsWrap').innerHTML=
+    '<div class="sgrid"><div class="sbox"><div class="snum" style="color:var(--red)">'+total+'</div><div class="slbl">SÉANCES</div></div><div class="sbox"><div class="snum" style="color:var(--gold)">'+streak+' 🔥</div><div class="slbl">STREAK</div></div></div>'
+    +'<div class="ssec">ACTIVITÉ 7 JOURS</div><div class="wrow">'+whtml+'</div>'
+    +buildChart(_chartDi,_chartEi)
+    +macrosHTML+weightHTML
+    +'<button class="rbtn" onclick="resetApp()">🗑 RÉINITIALISER</button>';
+}
+
+function resetApp(){if(confirm('Effacer toute la progression ?')){_cache={};dbSet('state',{});PROG_ACTUEL=null;renderProg();renderStats();showToast('🗑 RÉINITIALISÉ')}}
+
+// ─── ALTERNATIVES ───
+function toggleAlt(di,ei){var s=st();s['_altopen_'+di+'_'+ei]=!s['_altopen_'+di+'_'+ei];sv(s);renderProg()}
+function useAlt(di,ei,name){var s=st();s['_cx_'+di+'_'+ei]={n:name};s['_altopen_'+di+'_'+ei]=false;sv(s);renderProg();showToast('✅ EXERCICE CHANGÉ')}
+function resetEx(di,ei){var s=st();delete s['_cx_'+di+'_'+ei];sv(s);renderProg();showToast('↩ EXERCICE RÉINITIALISÉ')}
+
+// ─── MODAL MODIFIER ───
+var _mdi=-1,_mei=-1;
+function openEdit(di,ei){
+  _mdi=di;_mei=ei;
+  var s=st();var ex=PROG_ACTUEL[di].exercices[ei];var cx=s['_cx_'+di+'_'+ei];
+  document.getElementById('editName').value=cx?cx.n:ex.n;
+  document.getElementById('editSets').value=cx&&cx.s?cx.s:(ex.s+'×'+ex.r);
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEdit(){document.getElementById('editModal').classList.remove('open');_mdi=_mei=-1}
+document.getElementById('modalClose').addEventListener('click',closeEdit);
+document.getElementById('modalCancel').addEventListener('click',closeEdit);
+document.getElementById('editModal').addEventListener('click',function(e){if(e.target===this)closeEdit()});
+document.getElementById('modalSave').addEventListener('click',function(){
+  if(_mdi<0)return;
+  var s=st();var n=document.getElementById('editName').value.trim();var sr=document.getElementById('editSets').value.trim();
+  if(n){s['_cx_'+_mdi+'_'+_mei]={n:n,s:sr};sv(s);renderProg();showToast('💾 MODIFIÉ !')}
+  closeEdit();
+});
+
+// ─── GRAPHIQUE ÉVOLUTION ───
+var _chartDi=0,_chartEi=0;
+function buildChart(di,ei){
+  if(!PROG_ACTUEL)return'';
+  var s=st();
+  // collect all exercises with data
+  var exList=[];
+  for(var d=0;d<PROG_ACTUEL.length;d++){
+    for(var e=0;e<PROG_ACTUEL[d].exercices.length;e++){
+      var k='_w_'+d+'_'+e;
+      if(s[k]&&s[k].length>=2)exList.push({di:d,ei:e,n:(s['_cx_'+d+'_'+e]?s['_cx_'+d+'_'+e].n:PROG_ACTUEL[d].exercices[e].n),color:PROG_ACTUEL[d].color});
+    }
+  }
+  if(!exList.length)return'';
+  // tabs
+  var tabs='<div class="chart-tabs">';
+  for(var i=0;i<exList.length;i++){
+    var ex2=exList[i];var isOn=(ex2.di===_chartDi&&ex2.ei===_chartEi);
+    tabs+='<button class="chart-tab'+(isOn?' on':'')+'" onclick="selectChart('+ex2.di+','+ex2.ei+')">'+ex2.n+'</button>';
+  }
+  tabs+='</div>';
+  // find current
+  var cur=exList.find(function(x){return x.di===_chartDi&&x.ei===_chartEi})||exList[0];
+  if(!cur)return'';
+  _chartDi=cur.di;_chartEi=cur.ei;
+  var entries=(s['_w_'+cur.di+'_'+cur.ei]||[]).slice().reverse().slice(-8);
+  if(entries.length<2)return'<div class="chart-wrap"><div class="chart-title"><span>📈 ÉVOLUTION POIDS</span></div><div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);text-align:center;padding:20px">Sauvegarde au moins 2 poids pour voir le graphique</div></div>';
+  var vals=entries.map(function(e){return parseFloat(e.kg)||0});
+  var minV=Math.min.apply(null,vals);var maxV=Math.max.apply(null,vals);
+  var range=maxV-minV||1;
+  var W=320,H=100,pad=10;
+  var pts=vals.map(function(v,i){
+    var x=pad+(i/(vals.length-1))*(W-pad*2);
+    var y=H-pad-(v-minV)/range*(H-pad*2);
+    return{x:x,y:y,v:v,d:entries[i].date};
+  });
+  var path='M'+pts.map(function(p){return p.x+','+p.y}).join(' L');
+  var area='M'+pts[0].x+','+(H-pad)+' L'+pts.map(function(p){return p.x+','+p.y}).join(' L')+' L'+pts[pts.length-1].x+','+(H-pad)+' Z';
+  var svg='<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'
+    +'<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+cur.color+'" stop-opacity=".3"/><stop offset="100%" stop-color="'+cur.color+'" stop-opacity="0"/></linearGradient></defs>'
+    +'<path d="'+area+'" fill="url(#cg)"/>'
+    +'<path d="'+path+'" fill="none" stroke="'+cur.color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  for(var i=0;i<pts.length;i++){
+    svg+='<circle cx="'+pts[i].x+'" cy="'+pts[i].y+'" r="3.5" fill="'+cur.color+'"/>';
+    if(i===pts.length-1||i===0)svg+='<text x="'+pts[i].x+'" y="'+(pts[i].y-8)+'" font-family="monospace" font-size="9" fill="'+cur.color+'" text-anchor="middle">'+pts[i].v+'kg</text>';
+  }
+  svg+='</svg>';
+  var diff=vals[vals.length-1]-vals[0];var diffStr=(diff>=0?'+':'')+diff.toFixed(1)+'kg';
+  return '<div class="chart-wrap">'+tabs
+    +'<div class="chart-title"><span class="chart-ex-name">'+cur.n+'</span><span style="color:'+(diff>=0?'var(--cyan)':'var(--red)')+'">'+diffStr+'</span></div>'
+    +svg
+    +'<div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--dim)">'+entries[0].date+'</span><span style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--dim)">'+entries[entries.length-1].date+'</span></div>'
+    +'</div>';
+}
+function selectChart(di,ei){_chartDi=di;_chartEi=ei;renderStats()}
+
+// ─── AI AGENT ───
+var chatHistory=[];
+function buildSystemPrompt(){
+  var s=st();var profil=s.profil||{};var macros=s.macros||{};
+  var profilTxt=profil.poids?'Profil utilisateur : '+profil.poids+'kg, '+profil.taille+'cm, '+profil.age+' ans, '+profil.sexe+', objectif: '+profil.objectif+', niveau: '+profil.niveau+'. Macros: '+macros.cal+'kcal, '+macros.prot+'g protéines, '+macros.gluc+'g glucides, '+macros.lip+'g lipides.':'Profil non renseigné.';
+  return 'Tu es un agent fitness professionnel expert en musculation, nutrition sportive et performance. Tu es net et précis. Pas de blabla, que de l\'essentiel. Réponds en français, de manière directe et structurée. Utilise des emojis avec parcimonie. '+profilTxt;
+}
+
+async function sendMessage(){
+  var input=document.getElementById('chatInput');var msg=input.value.trim();if(!msg)return;
+  input.value='';document.getElementById('sendBtn').disabled=true;
+  addMsg('user',msg);
+  chatHistory.push({role:'user',content:msg});
+  var typing=addTyping();
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:buildSystemPrompt(),
+        messages:chatHistory.slice(-12)
+      })
+    });
+    var data=await resp.json();
+    var txt=data.content&&data.content[0]?data.content[0].text:'Erreur de réponse.';
+    typing.remove();
+    addMsg('ai',txt);
+    chatHistory.push({role:'assistant',content:txt});
+  }catch(e){typing.remove();addMsg('ai','Erreur de connexion. Vérifie ta connexion internet.')}
+  document.getElementById('sendBtn').disabled=false;
+}
+
+function addMsg(role,txt){
+  var box=document.getElementById('chatBox');
+  var div=document.createElement('div');div.className='msg msg-'+role;
+  div.innerHTML='<div class="msg-lbl">'+(role==='user'?'TOI':'GOGETA FITNESS AI')+'</div><div class="msg-bubble">'+txt.replace(/\n/g,'<br>')+'</div>';
+  box.appendChild(div);box.scrollTop=box.scrollHeight;return div;
+}
+
+function addTyping(){
+  var box=document.getElementById('chatBox');
+  var div=document.createElement('div');div.className='msg msg-ai';
+  div.innerHTML='<div class="msg-lbl">GOGETA FITNESS AI</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  box.appendChild(div);box.scrollTop=box.scrollHeight;return div;
+}
+
+function quickAsk(q){document.getElementById('chatInput').value=q;sendMessage()}
+
+// agent removed
+
+// ─── TOAST ───
+function showToast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},2600)}
+
+// ─── BASE ALIMENTS (pour 100g) ───
+var FOODS={
+  // Protéines
+  'poulet':        {cal:165,prot:31,gluc:0,lip:3.6,icon:'🍗'},
+  'blanc de poulet':{cal:110,prot:23,gluc:0,lip:1.2,icon:'🍗'},
+  'cuisse poulet': {cal:189,prot:26,gluc:0,lip:9,icon:'🍗'},
+  'boeuf':         {cal:250,prot:26,gluc:0,lip:17,icon:'🥩'},
+  'boeuf maigre':  {cal:160,prot:26,gluc:0,lip:7,icon:'🥩'},
+  'steak':         {cal:217,prot:26,gluc:0,lip:12,icon:'🥩'},
+  'porc':          {cal:242,prot:27,gluc:0,lip:14,icon:'🥩'},
+  'dinde':         {cal:135,prot:30,gluc:0,lip:1,icon:'🍗'},
+  'thon':          {cal:130,prot:29,gluc:0,lip:1,icon:'🐟'},
+  'saumon':        {cal:208,prot:20,gluc:0,lip:13,icon:'🐟'},
+  'sardines':      {cal:208,prot:25,gluc:0,lip:11,icon:'🐟'},
+  'maquereau':     {cal:205,prot:19,gluc:0,lip:14,icon:'🐟'},
+  'crevettes':     {cal:99,prot:24,gluc:0,lip:0.3,icon:'🦐'},
+  'oeuf':          {cal:155,prot:13,gluc:1,lip:11,icon:'🥚',unite:'oeuf',grUnit:60},
+  'blanc oeuf':    {cal:52,prot:11,gluc:0.7,lip:0.2,icon:'🥚',unite:'blanc',grUnit:33},
+  'fromage blanc': {cal:52,prot:8,gluc:4,lip:0.4,icon:'🧀'},
+  'skyr':          {cal:63,prot:11,gluc:4,lip:0.2,icon:'🥛'},
+  'whey':          {cal:400,prot:80,gluc:8,lip:4,icon:'💪'},
+  'yaourt grec':   {cal:97,prot:9,gluc:4,lip:5,icon:'🥛'},
+  'yaourt nature': {cal:61,prot:3.5,gluc:4.7,lip:3.3,icon:'🥛'},
+  'cottage cheese':{cal:98,prot:11,gluc:3.4,lip:4.3,icon:'🧀'},
+  'tofu':          {cal:76,prot:8,gluc:1.9,lip:4.8,icon:'🍱'},
+  // Glucides
+  'riz blanc':     {cal:130,prot:2.7,gluc:28,lip:0.3,icon:'🍚'},
+  'riz basmati':   {cal:121,prot:2.7,gluc:25,lip:0.4,icon:'🍚'},
+  'riz complet':   {cal:111,prot:2.6,gluc:23,lip:0.9,icon:'🍚'},
+  'riz':           {cal:130,prot:2.7,gluc:28,lip:0.3,icon:'🍚'},
+  'patate douce':  {cal:86,prot:1.6,gluc:20,lip:0.1,icon:'🍠'},
+  'pomme de terre':{cal:77,prot:2,gluc:17,lip:0.1,icon:'🥔'},
+  'pates':         {cal:158,prot:5.5,gluc:31,lip:1,icon:'🍝'},
+  'pates completes':{cal:149,prot:5.3,gluc:29,lip:1.2,icon:'🍝'},
+  'pain complet':  {cal:247,prot:9,gluc:41,lip:3.4,icon:'🍞'},
+  'pain blanc':    {cal:265,prot:8,gluc:50,lip:2,icon:'🍞'},
+  'avoine':        {cal:389,prot:17,gluc:66,lip:7,icon:'🌾'},
+  'flocons avoine':{cal:389,prot:17,gluc:66,lip:7,icon:'🌾'},
+  'banane':        {cal:89,prot:1.1,gluc:23,lip:0.3,icon:'🍌',unite:'banane',grUnit:120},
+  'pomme':         {cal:52,prot:0.3,gluc:14,lip:0.2,icon:'🍎',unite:'pomme',grUnit:150},
+  'orange':        {cal:47,prot:0.9,gluc:12,lip:0.1,icon:'🍊',unite:'orange',grUnit:130},
+  'raisin':        {cal:67,prot:0.6,gluc:17,lip:0.4,icon:'🍇'},
+  'fraises':       {cal:32,prot:0.7,gluc:7.7,lip:0.3,icon:'🍓'},
+  'myrtilles':     {cal:57,prot:0.7,gluc:14,lip:0.3,icon:'🫐'},
+  // Lipides
+  'avocat':        {cal:160,prot:2,gluc:9,lip:15,icon:'🥑',unite:'avocat',grUnit:150},
+  'amandes':       {cal:579,prot:21,gluc:22,lip:50,icon:'🥜'},
+  'noix':          {cal:654,prot:15,gluc:14,lip:65,icon:'🥜'},
+  'cacahuetes':    {cal:567,prot:26,gluc:16,lip:49,icon:'🥜'},
+  'huile olive':   {cal:884,prot:0,gluc:0,lip:100,icon:'🫒'},
+  'huile coco':    {cal:892,prot:0,gluc:0,lip:100,icon:'🥥'},
+  'beurre cacahuete':{cal:588,prot:25,gluc:20,lip:50,icon:'🥜'},
+  'graines chia':  {cal:486,prot:17,gluc:42,lip:31,icon:'🌱'},
+  // Légumes
+  'brocoli':       {cal:34,prot:2.8,gluc:7,lip:0.4,icon:'🥦'},
+  'epinards':      {cal:23,prot:2.9,gluc:3.6,lip:0.4,icon:'🥬'},
+  'tomate':        {cal:18,prot:0.9,gluc:3.9,lip:0.2,icon:'🍅'},
+  'concombre':     {cal:16,prot:0.7,gluc:3.6,lip:0.1,icon:'🥒'},
+  'carottes':      {cal:41,prot:0.9,gluc:10,lip:0.2,icon:'🥕'},
+  'courgette':     {cal:17,prot:1.2,gluc:3.1,lip:0.3,icon:'🥒'},
+  'poivron':       {cal:31,prot:1,gluc:6,lip:0.3,icon:'🫑'},
+  'haricots verts':{cal:31,prot:1.8,gluc:7,lip:0.1,icon:'🥬'},
+  'lentilles':     {cal:116,prot:9,gluc:20,lip:0.4,icon:'🫘'},
+  'pois chiches':  {cal:164,prot:9,gluc:27,lip:2.6,icon:'🫘'},
+  'haricots rouges':{cal:127,prot:8.7,gluc:23,lip:0.5,icon:'🫘'},
+  // Laitiers
+  'lait':          {cal:61,prot:3.2,gluc:4.8,lip:3.3,icon:'🥛'},
+  'lait ecrémé':   {cal:35,prot:3.4,gluc:5,lip:0.1,icon:'🥛'},
+  'fromage':       {cal:402,prot:25,gluc:1.3,lip:33,icon:'🧀'},
+  'mozzarella':    {cal:280,prot:17,gluc:2.2,lip:22,icon:'🧀'},
+  // Autres
+  'chocolat noir': {cal:546,prot:5,gluc:60,lip:31,icon:'🍫'},
+  'miel':          {cal:304,prot:0.3,gluc:82,lip:0,icon:'🍯'},
+  'confiture':     {cal:250,prot:0.4,gluc:65,lip:0.1,icon:'🍓'},
+  // Fromages
+  'camembert':     {cal:300,prot:20,gluc:0.5,lip:24,icon:'🧀'},
+  'brie':          {cal:334,prot:21,gluc:0.5,lip:28,icon:'🧀'},
+  'emmental':      {cal:382,prot:28,gluc:0.5,lip:29,icon:'🧀'},
+  'cheddar':       {cal:403,prot:25,gluc:1.3,lip:33,icon:'🧀'},
+  'parmesan':      {cal:431,prot:38,gluc:3.2,lip:29,icon:'🧀'},
+  'ricotta':       {cal:174,prot:11,gluc:3,lip:13,icon:'🧀'},
+  'feta':          {cal:264,prot:14,gluc:4,lip:21,icon:'🧀'},
+  'gruyere':       {cal:413,prot:30,gluc:0.4,lip:32,icon:'🧀'},
+  // Charcuterie
+  'jambon blanc':  {cal:107,prot:17,gluc:1,lip:4,icon:'🥓'},
+  'jambon cru':    {cal:250,prot:26,gluc:0.5,lip:16,icon:'🥓'},
+  'saucisson':     {cal:430,prot:24,gluc:1,lip:37,icon:'🥓'},
+  'bacon':         {cal:541,prot:37,gluc:1.4,lip:42,icon:'🥓'},
+  'lardons':       {cal:370,prot:15,gluc:0.5,lip:34,icon:'🥓'},
+  'mortadelle':    {cal:311,prot:14,gluc:0,lip:28,icon:'🥓'},
+  'salami':        {cal:425,prot:22,gluc:2,lip:37,icon:'🥓'},
+  'chorizo':       {cal:455,prot:24,gluc:2,lip:38,icon:'🥓'},
+  // Poissons et fruits de mer
+  'cabillaud':     {cal:82,prot:18,gluc:0,lip:0.7,icon:'🐟'},
+  'tilapia':       {cal:96,prot:20,gluc:0,lip:2,icon:'🐟'},
+  'bar':           {cal:97,prot:18,gluc:0,lip:2.5,icon:'🐟'},
+  'dorade':        {cal:96,prot:20,gluc:0,lip:2,icon:'🐟'},
+  'truite':        {cal:141,prot:20,gluc:0,lip:6,icon:'🐟'},
+  'moules':        {cal:86,prot:12,gluc:3.7,lip:2.2,icon:'🦪'},
+  'homard':        {cal:89,prot:19,gluc:0.5,lip:0.9,icon:'🦞'},
+  'calmar':        {cal:92,prot:16,gluc:3.1,lip:1.4,icon:'🦑'},
+  // Viandes
+  'agneau':        {cal:294,prot:25,gluc:0,lip:21,icon:'🥩'},
+  'veau':          {cal:172,prot:26,gluc:0,lip:7,icon:'🥩'},
+  'lapin':         {cal:136,prot:21,gluc:0,lip:5.5,icon:'🥩'},
+  'canard':        {cal:337,prot:19,gluc:0,lip:29,icon:'🍗'},
+  // Légumineuses
+  'feves':         {cal:341,prot:26,gluc:58,lip:1.5,icon:'🫘'},
+  'edamame':       {cal:122,prot:11,gluc:10,lip:5,icon:'🫘'},
+  'soja':          {cal:446,prot:36,gluc:30,lip:20,icon:'🫘'},
+  'quinoa':        {cal:120,prot:4.4,gluc:22,lip:1.9,icon:'🌾'},
+  'boulgour':      {cal:83,prot:3,gluc:19,lip:0.2,icon:'🌾'},
+  'couscous':      {cal:112,prot:3.8,gluc:23,lip:0.2,icon:'🌾'},
+  'polenta':       {cal:70,prot:1.6,gluc:15,lip:0.4,icon:'🌾'},
+  // Fruits
+  'mangue':        {cal:60,prot:0.8,gluc:15,lip:0.4,icon:'🥭',unite:'mangue',grUnit:200},
+  'ananas':        {cal:50,prot:0.5,gluc:13,lip:0.1,icon:'🍍'},
+  'kiwi':          {cal:61,prot:1.1,gluc:15,lip:0.5,icon:'🥝',unite:'kiwi',grUnit:80},
+  'peche':         {cal:39,prot:0.9,gluc:10,lip:0.3,icon:'🍑'},
+  'poire':         {cal:57,prot:0.4,gluc:15,lip:0.1,icon:'🍐'},
+  'cerise':        {cal:63,prot:1.1,gluc:16,lip:0.2,icon:'🍒'},
+  'pastèque':      {cal:30,prot:0.6,gluc:7.6,lip:0.2,icon:'🍉'},
+  'melon':         {cal:34,prot:0.8,gluc:8,lip:0.2,icon:'🍈'},
+  'abricot':       {cal:48,prot:1.4,gluc:11,lip:0.4,icon:'🍊'},
+  'citron':        {cal:29,prot:1.1,gluc:9,lip:0.3,icon:'🍋'},
+  'figues':        {cal:74,prot:0.8,gluc:19,lip:0.3,icon:'🍈'},
+  'dattes':        {cal:277,prot:1.8,gluc:75,lip:0.2,icon:'🌴'},
+  // Légumes supplémentaires
+  'champignons':   {cal:22,prot:3.1,gluc:3.3,lip:0.3,icon:'🍄'},
+  'ail':           {cal:149,prot:6.4,gluc:33,lip:0.5,icon:'🧄'},
+  'oignon':        {cal:40,prot:1.1,gluc:9,lip:0.1,icon:'🧅'},
+  'chou fleur':    {cal:25,prot:2,gluc:5,lip:0.3,icon:'🥦'},
+  'celeri':        {cal:16,prot:0.7,gluc:3,lip:0.2,icon:'🥬'},
+  'asperges':      {cal:20,prot:2.2,gluc:3.9,lip:0.1,icon:'🥬'},
+  'artichaut':     {cal:47,prot:3.3,gluc:11,lip:0.2,icon:'🥬'},
+  'petit pois':    {cal:81,prot:5.4,gluc:14,lip:0.4,icon:'🫛'},
+  'maïs':          {cal:86,prot:3.3,gluc:19,lip:1.4,icon:'🌽'},
+  'betterave':     {cal:43,prot:1.6,gluc:10,lip:0.2,icon:'🫛'},
+  'radis':         {cal:16,prot:0.7,gluc:3.4,lip:0.1,icon:'🥬'},
+  'poireau':       {cal:61,prot:1.5,gluc:14,lip:0.3,icon:'🥬'},
+  'chou':          {cal:25,prot:1.3,gluc:6,lip:0.1,icon:'🥬'},
+  // Boissons
+  'lait ecrémé':   {cal:35,prot:3.4,gluc:5,lip:0.1,icon:'🥛'},
+  'lait demi ecrémé':{cal:46,prot:3.2,gluc:4.8,lip:1.5,icon:'🥛'},
+  'jus orange':    {cal:45,prot:0.7,gluc:10,lip:0.2,icon:'🍊'},
+  'jus pomme':     {cal:47,prot:0.1,gluc:12,lip:0.1,icon:'🍎'},
+  'coca cola':     {cal:42,prot:0,gluc:11,lip:0,icon:'🥤'},
+  'boisson sport': {cal:26,prot:0,gluc:6.5,lip:0,icon:'🥤'},
+  'cafe':          {cal:2,prot:0.3,gluc:0,lip:0,icon:'☕'},
+  'the':           {cal:1,prot:0,gluc:0.2,lip:0,icon:'🍵'},
+  'eau':           {cal:0,prot:0,gluc:0,lip:0,icon:'💧'},
+  // Fast food / Plats
+  'pizza':         {cal:266,prot:11,gluc:33,lip:10,icon:'🍕'},
+  'burger':        {cal:295,prot:17,gluc:24,lip:14,icon:'🍔'},
+  'frites':        {cal:312,prot:3.4,gluc:41,lip:15,icon:'🍟'},
+  'kebab':         {cal:220,prot:15,gluc:22,lip:8,icon:'🥙'},
+  'sushi':         {cal:150,prot:6,gluc:28,lip:1,icon:'🍱'},
+  'wrap':          {cal:220,prot:9,gluc:28,lip:8,icon:'🌯'},
+  'salade cesar':  {cal:170,prot:9,gluc:9,lip:12,icon:'🥗'},
+  // Produits sucrés
+  'biscuits':      {cal:502,prot:6,gluc:67,lip:23,icon:'🍪'},
+  'gateau':        {cal:380,prot:5,gluc:52,lip:18,icon:'🎂'},
+  'croissant':     {cal:406,prot:8.2,gluc:45,lip:21,icon:'🥐',unite:'croissant',grUnit:50},
+  'pain au chocolat':{cal:394,prot:7.5,gluc:47,lip:19,icon:'🥐'},
+  'crepe':         {cal:200,prot:5,gluc:26,lip:8,icon:'🥞'},
+  'yaourt sucre':  {cal:97,prot:4.7,gluc:16,lip:1.7,icon:'🥛'},
+  // Matières grasses
+  'beurre':        {cal:717,prot:0.9,gluc:0.1,lip:81,icon:'🧈'},
+  'margarine':     {cal:717,prot:0.2,gluc:0.7,lip:80,icon:'🧈'},
+  'creme fraiche': {cal:292,prot:2.1,gluc:3.4,lip:30,icon:'🥛'},
+  'huile tournesol':{cal:884,prot:0,gluc:0,lip:100,icon:'🌻'},
+  'huile colza':   {cal:884,prot:0,gluc:0,lip:100,icon:'🌿'},
+};
+
+function liveSearch(){
+  var query=document.getElementById('foodSearch').value.trim().toLowerCase();
+  var dd=document.getElementById('foodDropdown');
+  if(!query||query.length<2){dd.style.display='none';return}
+  var matches=Object.keys(FOODS).filter(function(k){return k.indexOf(query)!==-1}).slice(0,6);
+  if(!matches.length){dd.style.display='none';return}
+  dd.style.display='block';
+  dd.innerHTML=matches.map(function(k){
+    var f=FOODS[k];
+    return '<div onclick="openGramsModal(\''+k+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer">'
+      +'<div><div style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:700">'+f.icon+' '+k.charAt(0).toUpperCase()+k.slice(1)+'</div>'
+      +'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--dim);margin-top:1px">'+f.cal+' kcal · '+f.prot+'g P · '+f.gluc+'g G · '+f.lip+'g L (pour 100g)</div></div>'
+      +'<div style="color:var(--orange);font-size:18px">›</div>'
+      +'</div>';
+  }).join('');
+}
+
+var _selectedFood=null;
+function openGramsModal(key){
+  _selectedFood=key;
+  var f=FOODS[key];
+  var titleEl=document.getElementById('gramsModalTitle');
+  var inputEl=document.getElementById('gramsInput');
+  var ddEl=document.getElementById('foodDropdown');
+  var searchEl=document.getElementById('foodSearch');
+  var modalEl=document.getElementById('gramsModal');
+  if(!titleEl||!inputEl||!modalEl)return;
+  titleEl.innerHTML=f.icon+' '+key.charAt(0).toUpperCase()+key.slice(1)+' <button class="modal-x" onclick="closeGramsModal()">✕</button>';
+  inputEl.value=f.grUnit||100;
+  if(ddEl)ddEl.style.display='none';
+  if(searchEl)searchEl.value='';
+
+  // Unit buttons - show if food has unite property
+  var unitBtnsEl=document.getElementById('unitBtns');
+  if(unitBtnsEl){
+    if(f.unite&&f.grUnit){
+      unitBtnsEl.style.display='flex';
+      unitBtnsEl.style.flexWrap='wrap';
+      unitBtnsEl.style.gap='5px';
+      var btns='';
+      // Half unit for big foods like avocat
+      if(f.grUnit>=100){
+        btns+='<button onclick="setGrams('+Math.round(f.grUnit/2)+')" style="padding:7px 10px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--dimb);font-family:\'DM Mono\',monospace;font-size:11px;cursor:pointer">½ '+f.unite+'</button>';
+      }
+      for(var n=1;n<=6;n++){
+        var active=n===1;
+        btns+='<button onclick="setGrams('+(f.grUnit*n)+')" style="padding:7px 10px;border-radius:7px;border:1px solid '+(active?'var(--orange)':'var(--brd)')+';background:'+(active?'rgba(245,155,58,.1)':'var(--surf)')+';color:'+(active?'var(--orange)':'var(--dimb)')+';font-family:\'DM Mono\',monospace;font-size:11px;cursor:pointer">'+n+' '+f.unite+(n>1?'s':'')+'</button>';
+      }
+      unitBtnsEl.innerHTML=btns;
+    } else {
+      unitBtnsEl.style.display='none';
+    }
+  }
+
+  updateGramsPreview();
+  modalEl.classList.add('open');
+}
+
+function updateGramsPreview(){
+  if(!_selectedFood)return;
+  var f=FOODS[_selectedFood];
+  var g=parseFloat(document.getElementById('gramsInput').value)||0;
+  var mult=g/100;
+  document.getElementById('gramsCalPreview').textContent=Math.round(f.cal*mult)+' kcal';
+  document.getElementById('gramsMacroPreview').textContent=Math.round(f.prot*mult)+'g P · '+Math.round(f.gluc*mult)+'g G · '+Math.round(f.lip*mult)+'g L';
+}
+
+function adjustGrams(delta){
+  var inp=document.getElementById('gramsInput');
+  var val=Math.max(1,Math.min(2000,(parseFloat(inp.value)||100)+delta));
+  inp.value=val;updateGramsPreview();
+}
+
+function setGrams(g){
+  document.getElementById('gramsInput').value=g;updateGramsPreview();
+}
+
+function closeGramsModal(){
+  document.getElementById('gramsModal').classList.remove('open');_selectedFood=null;
+}
+
+function confirmAddFood(){
+  if(!_selectedFood)return;
+  var grams=parseFloat(document.getElementById('gramsInput').value)||100;
+  addFood(_selectedFood,grams);
+  closeGramsModal();
+}
+
+function searchFood(){
+  var query=document.getElementById('foodSearch').value.trim().toLowerCase();
+  var grams=parseFloat(document.getElementById('foodGrams')?document.getElementById('foodGrams').value:100)||100;
+  if(!query){showToast('⚠️ Tape un aliment');return}
+  var matches=Object.keys(FOODS).filter(function(k){return k.indexOf(query)!==-1});
+  if(!matches.length){document.getElementById('foodResults').innerHTML='<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);padding:8px 0">Non trouvé. Essaie: poulet, riz, oeuf...</div>';return}
+  openGramsModal(matches[0]);
+}
+
+function addFood(key,grams){
+  var s=st();if(!s.meals)s.meals=[];
+  var f=FOODS[key];var mult=grams/100;
+  s.meals.push({
+    name:key.charAt(0).toUpperCase()+key.slice(1),
+    icon:f.icon,grams:grams,
+    cal:Math.round(f.cal*mult),prot:Math.round(f.prot*mult),
+    gluc:Math.round(f.gluc*mult),lip:Math.round(f.lip*mult),
+    time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})
+  });
+  sv(s);renderNutri();showToast('✅ '+key.charAt(0).toUpperCase()+key.slice(1)+' ajouté !');
+}
+
+function removeFood(idx){
+  var s=st();if(!s.meals)return;
+  s.meals.splice(idx,1);sv(s);renderNutri();
+}
+
+function resetNutri(){
+  var s=st();s.meals=[];sv(s);renderNutri();showToast('↩ REPAS RÉINITIALISÉ');
+}
+
+function renderNutri(){
+  var s=st();var meals=s.meals||[];
+  var totCal=0,totProt=0,totGluc=0,totLip=0;
+  for(var i=0;i<meals.length;i++){totCal+=meals[i].cal;totProt+=meals[i].prot;totGluc+=meals[i].gluc;totLip+=meals[i].lip}
+  document.getElementById('totCal').textContent=totCal;
+  document.getElementById('totProt').textContent=totProt;
+  document.getElementById('totGluc').textContent=totGluc;
+  document.getElementById('totLip').textContent=totLip;
+  var prog='';
+  if(s.macros){
+    var m=s.macros;
+    var bars=[
+      {lbl:'CALORIES',val:totCal,max:m.cal,col:'var(--red)'},
+      {lbl:'PROTÉINES',val:totProt,max:m.prot,col:'var(--orange)'},
+      {lbl:'GLUCIDES',val:totGluc,max:m.gluc,col:'var(--gold)'},
+      {lbl:'LIPIDES',val:totLip,max:m.lip,col:'var(--cyan)'}
+    ];
+    prog='<div style="margin-top:4px">';
+    for(var i=0;i<bars.length;i++){
+      var b=bars[i];var pct=Math.min(Math.round(b.val/b.max*100),100);
+      prog+='<div style="margin-bottom:8px">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:3px">'
+        +'<span style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:1px;color:var(--dim)">'+b.lbl+'</span>'
+        +'<span style="font-family:\'DM Mono\',monospace;font-size:10px;color:'+b.col+'">'+b.val+' / '+b.max+'</span></div>'
+        +'<div style="height:6px;background:var(--surf);border-radius:99px;overflow:hidden">'
+        +'<div style="height:100%;width:'+pct+'%;background:'+b.col+';border-radius:99px;transition:width .4s"></div>'
+        +'</div></div>';
+    }
+    prog+='</div>';
+  }else{prog='<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);margin-top:6px">Configure ton profil pour voir la progression</div>'}
+  document.getElementById('nutriProgress').innerHTML=prog;
+  var listHTML='';
+  if(meals.length){
+    listHTML='<div style="background:var(--card);border:1px solid var(--brd);border-radius:14px;overflow:hidden">'
+      +'<div style="font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:3px;color:var(--orange);padding:12px 14px 8px">MES REPAS DU JOUR</div>';
+    for(var i=0;i<meals.length;i++){
+      var meal=meals[i];
+      listHTML+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid rgba(255,255,255,.04)">'
+        +'<div><div style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:700">'+meal.icon+' '+meal.name+' ('+meal.grams+'g)</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);margin-top:2px">'+meal.cal+' kcal · '+meal.prot+'g P · '+meal.time+'</div></div>'
+        +'<button onclick="removeFood('+i+')" style="background:transparent;border:1px solid var(--brd);border-radius:6px;color:var(--dim);font-size:12px;padding:4px 8px;cursor:pointer">✕</button>'
+        +'</div>';
+    }
+    listHTML+='</div>';
+  }
+  document.getElementById('mealList').innerHTML=listHTML;
+}
+
+document.addEventListener('click',function(e){
+  var dd=document.getElementById('foodDropdown');
+  if(dd&&!dd.contains(e.target)&&e.target.id!=='foodSearch')dd.style.display='none';
+});
+
+  // Find matches
+
+
+
+
+function removeFood(idx){
+  var s=st();if(!s.meals)return;
+  s.meals.splice(idx,1);sv(s);renderNutri();
+}
+
+function resetNutri(){
+  var s=st();s.meals=[];sv(s);renderNutri();showToast('↩ REPAS RÉINITIALISÉ');
+}
+
+function renderNutri(){
+  var s=st();var meals=s.meals||[];
+  var totCal=0,totProt=0,totGluc=0,totLip=0;
+  for(var i=0;i<meals.length;i++){totCal+=meals[i].cal;totProt+=meals[i].prot;totGluc+=meals[i].gluc;totLip+=meals[i].lip}
+  document.getElementById('totCal').textContent=totCal;
+  document.getElementById('totProt').textContent=totProt;
+  document.getElementById('totGluc').textContent=totGluc;
+  document.getElementById('totLip').textContent=totLip;
+
+  // Progress vs objectif
+  var prog='';
+  if(s.macros){
+    var m=s.macros;
+    var pctCal=Math.min(Math.round(totCal/m.cal*100),100);
+    var pctProt=Math.min(Math.round(totProt/m.prot*100),100);
+    var bars=[
+      {lbl:'CALORIES',val:totCal,max:m.cal,pct:pctCal,col:'var(--red)'},
+      {lbl:'PROTÉINES',val:totProt,max:m.prot,pct:pctProt,col:'var(--orange)'},
+      {lbl:'GLUCIDES',val:totGluc,max:m.gluc,pct:Math.min(Math.round(totGluc/m.gluc*100),100),col:'var(--gold)'},
+      {lbl:'LIPIDES',val:totLip,max:m.lip,pct:Math.min(Math.round(totLip/m.lip*100),100),col:'var(--cyan)'}
+    ];
+    prog='<div style="margin-top:4px">';
+    for(var i=0;i<bars.length;i++){
+      var b=bars[i];
+      prog+='<div style="margin-bottom:8px">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:3px">'
+        +'<span style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:1px;color:var(--dim)">'+b.lbl+'</span>'
+        +'<span style="font-family:\'DM Mono\',monospace;font-size:10px;color:'+b.col+'">'+b.val+' / '+b.max+'</span></div>'
+        +'<div style="height:6px;background:var(--surf);border-radius:99px;overflow:hidden">'
+        +'<div style="height:100%;width:'+b.pct+'%;background:'+b.col+';border-radius:99px;transition:width .4s"></div>'
+        +'</div></div>';
+    }
+    prog+='</div>';
+  } else {
+    prog='<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);margin-top:6px">Configure ton profil pour voir la progression vs objectif</div>';
+  }
+  document.getElementById('nutriProgress').innerHTML=prog;
+
+  // Meal list
+  var listHTML='';
+  if(meals.length){
+    listHTML='<div style="background:var(--card);border:1px solid var(--brd);border-radius:14px;overflow:hidden">'
+      +'<div style="font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:3px;color:var(--orange);padding:12px 14px 8px">MES REPAS DU JOUR</div>';
+    for(var i=0;i<meals.length;i++){
+      var meal=meals[i];
+      listHTML+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid rgba(255,255,255,.04)">'
+        +'<div><div style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:700">'+meal.icon+' '+meal.name+' ('+meal.grams+'g)</div>'
+        +'<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--dim);margin-top:2px">'+meal.cal+' kcal · '+meal.time+'</div></div>'
+        +'<button onclick="removeFood('+i+')" style="background:transparent;border:1px solid var(--brd);border-radius:6px;color:var(--dim);font-size:12px;padding:4px 8px;cursor:pointer">✕</button>'
+        +'</div>';
+    }
+    listHTML+='</div>';
+  }
+  document.getElementById('mealList').innerHTML=listHTML;
+}
+
+// Handle Enter key for food search
+document.getElementById('foodSearch').addEventListener('keydown',function(e){if(e.key==='Enter')searchFood()});
+
+// ─── AGENT FITNESS INTELLIGENT (sans API) ───
+var REPONSES=[
+  {mots:['proteine','protéine','whey','prot'],rep:'🥩 Protéines — l\'essentiel :\n\n• Objectif : 1,6 à 2g par kg de poids corporel\n• Meilleure source : poulet, œufs, thon, fromage blanc\n• Whey : 1 shaker post-séance pour compléter\n• Répartis sur 3-4 repas minimum\n• Sans protéines suffisantes = pas de prise de muscle, même avec le meilleur programme'},
+  {mots:['calorie','kcal','manger','repas','alimentation'],rep:'🍽 Nutrition — les bases :\n\n• Prise de muscle : TDEE + 200 à 300 kcal\n• Perte de gras : TDEE - 300 à 400 kcal\n• Recomposition : autour du TDEE\n• Protéines en priorité à chaque repas\n• Glucides autour des séances (avant + après)\n• Lipides = minimum 0,8g/kg pour les hormones'},
+  {mots:['creatine','créatine'],rep:'💊 Créatine monohydrate :\n\n• Le complément le plus validé scientifiquement\n• 5g par jour — tous les jours, même les jours sans séance\n• Pas besoin de phase de charge\n• Résultats visibles en 3-4 semaines\n• Effets : +force, +volume musculaire, meilleure récupération\n• Prends-la avec de l\'eau ou un shaker'},
+  {mots:['recuperation','récupération','repos','dormir','sommeil'],rep:'😴 Récupération — aussi important que l\'entraînement :\n\n• 7 à 9h de sommeil : le muscle se construit pendant le sommeil\n• Minimum 48h entre deux séances du même muscle\n• Magnésium bisglycinate 300mg le soir : améliore la qualité du sommeil\n• Oméga-3 : réduit l\'inflammation et les courbatures\n• Hydratation : 2-3L d\'eau par jour minimum\n• Stress élevé = récupération réduite = moins de résultats'},
+  {mots:['pré-séance','pre seance','avant seance','manger avant'],rep:'⚡ Repas pré-séance :\n\n• Timing : 1h30 à 2h avant la séance\n• Composition : protéines + glucides complexes\n• Exemple : riz + poulet, ou flocons d\'avoine + œufs\n• Si moins d\'1h : banane + fromage blanc\n• Évite les lipides en grande quantité (ralentissent la digestion)\n• Hydrate-toi bien avant de commencer'},
+  {mots:['post','apres seance','après séance','après seance'],rep:'🔄 Repas post-séance :\n\n• Fenêtre anabolique : dans les 1-2h après la séance\n• Protéines rapides : whey ou blanc de poulet\n• Glucides rapides : riz blanc, banane, pain blanc\n• Objectif : stopper le catabolisme et lancer la récupération\n• 30-40g de protéines + 60-80g de glucides\n• Évite les lipides dans ce repas (ralentissent l\'absorption)'},
+  {mots:['supplement','complément','complement','vitamines'],rep:'💊 Compléments recommandés :\n\n1. Créatine monohydrate — 5g/jour (priorité absolue)\n2. Whey Isolate — post-séance si apports en protéines insuffisants\n3. Oméga-3 — 2-3g/jour, anti-inflammatoire\n4. Magnésium bisglycinate — 300mg le soir\n5. Vitamine D3 — 2000 UI/jour si peu d\'exposition au soleil\n\nTout le reste est optionnel. Ces 5 là font 95% du travail.'},
+  {mots:['seche','sèche','perdre','perte','gras','maigrir','mincir'],rep:'🔥 Perte de gras intelligente :\n\n• Déficit calorique modéré : -300 à -400 kcal/jour\n• Protéines élevées : 2-2,2g/kg pour préserver le muscle\n• Continue à t\'entraîner lourd : le muscle se garde avec la charge\n• Cardio en option : 2-3x/semaine en LISS (marche rapide, vélo)\n• Pèse-toi le matin à jeun, 3x/semaine — prends la moyenne\n• Perte idéale : 0,5 à 1kg/semaine'},
+  {mots:['prise de masse','masse musculaire','grossir','muscle'],rep:'💪 Prise de masse :\n\n• Surplus calorique : +200 à 300 kcal/jour\n• Protéines : 1,8 à 2g/kg minimum\n• Progression des charges : +2,5% par semaine\n• Sommeil : 8h minimum\n• Patience : 1 à 2kg de muscle par mois MAX naturellement\n• Le muscle se construit lentement — la régularité est la clé'},
+  {mots:['force','powerlifting','lourd','charge'],rep:'🏋 Développer la force :\n\n• Séries courtes : 3 à 5 reps avec charges lourdes\n• Repos long : 3 à 5 minutes entre les séries\n• Mouvements composés prioritaires : squat, développé, soulevé\n• Progression linéaire : ajoute 2,5kg quand tu réussis toutes les séries\n• Technique parfaite AVANT d\'augmenter la charge\n• Ceinture de musculation pour les charges maximales'},
+  {mots:['cardio'],rep:'🏃 Cardio et musculation :\n\n• Le cardio ne détruit pas le muscle si tu manges assez\n• LISS (intensité légère) : marche, vélo — idéal en complément\n• HIIT (haute intensité) : max 2x/semaine, pas le jour d\'une séance lourde\n• Pour la perte de gras : 20-30 min après la séance ou à jeun le matin\n• Pour la santé cardiovasculaire : 150 min/semaine minimum\n• Ne remplace jamais la musculation par le cardio si ton but est le muscle'},
+  {mots:['bonjour','salut','hello','coucou','slt'],rep:'💪 Salut ! Je suis ton agent fitness GOGETA.\n\nJe peux t\'aider sur :\n• 🥗 Nutrition et calories\n• 💊 Compléments alimentaires\n• 🏋 Exercices et technique\n• 😴 Récupération et sommeil\n• 🔥 Perte de gras\n• 💪 Prise de muscle\n\nPose ta question !'},
+  {mots:['technique','form','mouvement','exercice'],rep:'🎯 Technique des exercices — règles universelles :\n\n• Descente toujours lente et contrôlée (2-3 secondes)\n• Montée explosive mais contrôlée\n• Amplitude complète sur chaque rep\n• Gainage actif (ventre rentré, dos neutre)\n• Respiration : expire à l\'effort, inspire à la descente\n• Maîtrise la technique AVANT d\'augmenter la charge\n• Film-toi de profil pour analyser tes mouvements'},
+  {mots:['hydration','eau','hydratation'],rep:'💧 Hydratation :\n\n• Minimum 2 à 3L d\'eau par jour\n• +500ml par heure de sport\n• La déshydratation de 2% réduit les performances de 10-20%\n• Urine claire = bien hydraté\n• Eau avant, pendant et après la séance\n• Évite les sodas et jus sucrés pendant la fenêtre post-séance'},
+];
+
+function getAgentResponse(msg){
+  var m=msg.toLowerCase();
+  for(var i=0;i<REPONSES.length;i++){
+    var r=REPONSES[i];
+    for(var j=0;j<r.mots.length;j++){
+      if(m.indexOf(r.mots[j])!==-1)return r.rep;
+    }
+  }
+  var s=st();var profil=s.profil||{};
+  if(profil.poids){
+    return '🤖 Je n\'ai pas de réponse précise pour "'+msg+'".\n\nMais voici ce que je sais de ton profil :\n• Poids : '+profil.poids+'kg\n• Objectif : '+profil.objectif.replace('_',' ')+'\n• Niveau : '+profil.niveau+'\n\nPose-moi une question sur : protéines, calories, créatine, récupération, sommeil, cardio, prise de masse, sèche, technique, ou compléments.';
+  }
+  return '🤖 Je n\'ai pas de réponse précise pour cette question.\n\nPose-moi une question sur :\n• Protéines / Nutrition / Calories\n• Créatine / Compléments\n• Récupération / Sommeil\n• Prise de masse / Sèche\n• Cardio / Technique\n• Repas pré-séance / post-séance';
+}
+
+var chatHistory=[];
+async function sendMessage(){
+  var input=document.getElementById('chatInput');
+  var msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  document.getElementById('sendBtn').disabled=true;
+  addMsg('user',msg);
+  chatHistory.push({role:'user',content:msg});
+  var typing=addTyping();
+  try{
+    var s=st();var profil=s.profil||{};var macros=s.macros||{};
+    var systemPrompt='Tu es un agent fitness professionnel expert en musculation et nutrition sportive. Tu es net et précis. Réponds en français, de manière directe et structurée. Pas de blabla.'+(profil.poids?' Profil : '+profil.poids+'kg, '+profil.taille+'cm, '+profil.age+' ans, objectif: '+profil.objectif+', niveau: '+profil.niveau+'. Macros: '+macros.cal+'kcal, '+macros.prot+'g protéines.':'');
+    var resp=await fetch('https://gothamfitness.ali-assadillah-3.workers.dev',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-5',
+        max_tokens:1000,
+        system:systemPrompt,
+        messages:chatHistory.slice(-12)
+      })
+    });
+    var data=await resp.json();
+    var txt=data.content&&data.content[0]?data.content[0].text:'Erreur de réponse.';
+    typing.remove();
+    addMsg('ai',txt);
+    chatHistory.push({role:'assistant',content:txt});
+  }catch(e){
+    typing.remove();
+    addMsg('ai','Erreur de connexion. Vérifie ta connexion internet.');
+  }
+  document.getElementById('sendBtn').disabled=false;
+}
+
+function addTyping(){
+  var box=document.getElementById('chatBox');
+  var div=document.createElement('div');div.className='msg msg-ai';
+  div.innerHTML='<div class="msg-lbl">GOGETA FITNESS AI</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  box.appendChild(div);box.scrollTop=box.scrollHeight;return div;
+}
+
+function addMsg(role,txt){
+  var box=document.getElementById('chatBox');
+  if(!box)return;
+  var div=document.createElement('div');div.className='msg msg-'+role;
+  div.innerHTML='<div class="msg-lbl">'+(role==='user'?'TOI':'GOGETA FITNESS AI')+'</div><div class="msg-bubble">'+txt.replace(/\n/g,'<br>')+'</div>';
+  box.appendChild(div);box.scrollTop=box.scrollHeight;return div;
+}
+
+function quickAsk(q){
+  var inp=document.getElementById('chatInput');
+  if(inp){inp.value=q;sendMessage();}
+}
+
+// agent removed
+
+async function init(){
+  await openDB();
+  var saved=await dbGet('state');if(saved)_cache['state']=saved;
+  var s=st();
+  if(s.profil){
+    var p=s.profil;
+    document.getElementById('fpoids').value=p.poids||'';
+    document.getElementById('ftaille').value=p.taille||'';
+    document.getElementById('fage').value=p.age||'';
+    document.getElementById('fsexe').value=p.sexe||'homme';
+    document.getElementById('fobjectif').value=p.objectif||'prise_muscle';
+    document.getElementById('fniveau').value=p.niveau||'intermediaire';
+    document.getElementById('factivite').value=p.activite||'modere';
+    if(s.macros){
+      var m=s.macros;
+      document.getElementById('mcCal').textContent=m.cal;
+      document.getElementById('mcProt').textContent=m.prot;
+      document.getElementById('mcGluc').textContent=m.gluc;
+      document.getElementById('mcLip').textContent=m.lip;
+      document.getElementById('macrosCard').style.display='block';
+      document.getElementById('alimentsTxt').innerHTML=getAliments(p.objectif);
+      PROG_ACTUEL=getProgramme(p.objectif,p.niveau,p.poids,p.sexe);
+      document.getElementById('hdrBadge').textContent=p.poids+'KG · '+p.objectif.replace('_',' ').toUpperCase();
+    }
+  }
+  document.getElementById('loadScreen').style.display='none';
+}
+init();
+</script>
+</body>
+</html>
